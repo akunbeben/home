@@ -1,16 +1,29 @@
 #!/usr/bin/env bash
 # Bootstrap a new macOS machine.
-# Run this ONCE before `nix run nix-darwin -- switch --flake ~/Projects/home#Macbook`
+# Run this ONCE on a fresh device.
 
 set -e
 
-echo "==> Setting up SSH keys from Bitwarden..."
-if ! command -v bw &>/dev/null; then
-  echo "  bw CLI not found — install Bitwarden CLI first: brew install bitwarden-cli"
-  exit 1
+# --- 1. Homebrew ---
+echo "==> Checking Homebrew..."
+if ! command -v brew &>/dev/null; then
+  echo "  Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+  echo "  Homebrew already installed."
 fi
 
-BW_STATUS=$(bw status | python3 -c "import sys,json; print(json.load(sys.stdin)['status'])")
+# --- 2. Bitwarden CLI ---
+echo "==> Checking Bitwarden CLI..."
+if ! command -v bw &>/dev/null; then
+  echo "  Installing bitwarden-cli..."
+  brew install bitwarden-cli
+fi
+
+# --- 3. SSH keys from Bitwarden ---
+echo "==> Restoring SSH keys from Bitwarden..."
+BW_STATUS=$(bw status | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
 if [ "$BW_STATUS" = "unauthenticated" ]; then
   bw login
 fi
@@ -28,32 +41,55 @@ bw get notes 0ce6f34e-3349-422b-9f30-b43400e547b1 > ~/.ssh/work.pub
 
 chmod 600 ~/.ssh/personal ~/.ssh/work
 chmod 644 ~/.ssh/personal.pub ~/.ssh/work.pub
+
+# Write minimal SSH config so git can use the host aliases before nix manages it
+cat > ~/.ssh/config <<'SSHCONF'
+Host github.com-personal
+  HostName github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/personal
+
+Host github.com-work
+  HostName github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/work
+
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/infra
+SSHCONF
+chmod 600 ~/.ssh/config
 echo "  SSH keys restored."
 
-echo "==> Checking Homebrew..."
-if ! command -v brew &>/dev/null; then
-  echo "Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  # Apple Silicon: add brew to PATH for the rest of this script
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-else
-  echo "Homebrew already installed."
-fi
-
-echo "==> Installing Nix (Determinate Systems)..."
+# --- 4. Nix ---
+echo "==> Checking Nix..."
 if ! command -v nix &>/dev/null; then
+  echo "  Installing Nix (Determinate Systems)..."
   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
     | sh -s -- install --no-confirm
-  # Source nix for the rest of this script
   # shellcheck disable=SC1091
   . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 else
-  echo "Nix already installed."
+  echo "  Nix already installed."
 fi
 
+# --- 5. Clone home repo ---
+echo "==> Cloning home config repo..."
+mkdir -p ~/Projects
+if [ ! -d ~/Projects/home/.git ]; then
+  git clone git@github.com-personal:akunbeben/home.git ~/Projects/home
+else
+  echo "  ~/Projects/home already exists."
+fi
+
+# --- 6. nix-darwin switch ---
 echo "==> Running nix-darwin switch..."
 nix run nix-darwin -- switch --flake ~/Projects/home#Macbook
 
+# --- 7. Valet ---
 echo "==> Running valet install..."
 if command -v valet &>/dev/null; then
   valet install

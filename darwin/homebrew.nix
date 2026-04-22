@@ -17,6 +17,7 @@
       "laravel/valet/valet"
       "composer"
       "wireguard-tools"
+      "bitwarden-cli"
     ];
 
     casks = [
