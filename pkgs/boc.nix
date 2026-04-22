@@ -1,11 +1,11 @@
 { pkgs }:
 pkgs.writeShellScriptBin "boc" ''
   BOC_REPOS=(
-    "/Users/benny/Projects/BOC/boc-provision"
-    "/Users/benny/Projects/BOC/boc-whmcs-plugin"
-    "/Users/benny/Projects/BOC/boc-instant-app-n8n"
-    "/Users/benny/Projects/boc-co-id-frontend"
-    "/Users/benny/Projects/boc-web-id-frontend"
+    "$HOME/Work/boc-provision"
+    "$HOME/Work/boc-whmcs-plugin"
+    "$HOME/Work/boc-instant-app-n8n"
+    "$HOME/Work/boc-co-id-frontend"
+    "$HOME/Work/boc-web-id-frontend"
   )
 
   TL='┌' TR='┐' BL='└' BR='┘'
@@ -39,7 +39,7 @@ pkgs.writeShellScriptBin "boc" ''
 
   cmd_work() {
     local session="boc"
-    local eops_dir="/Users/benny/Projects/everyday-ops"
+    local eops_dir="$HOME/Projects/everyday-ops"
 
     if tmux has-session -t "$session" 2>/dev/null; then
       _tmux_go "$session"
