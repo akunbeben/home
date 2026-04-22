@@ -28,6 +28,9 @@ let
     # Reload: Alt+r
     { id = "key_reload"; key = "r"; modifiers = { alt = true; control = false; shift = false; meta = false; accel = false; }; }
 
+    # Reload clearing cache: Alt+Shift+r
+    { id = "key_reload_skip_cache"; key = "r"; modifiers = { alt = true; shift = true; control = false; meta = false; accel = false; }; }
+
     # Focus location: Alt+l
     { id = "focusURLBar"; key = "l"; modifiers = { alt = true; control = false; shift = false; meta = false; accel = false; }; }
 
