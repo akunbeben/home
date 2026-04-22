@@ -26,9 +26,13 @@ echo "==> Restoring SSH keys from Bitwarden..."
 BW_STATUS=$(bw status | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
 if [ "$BW_STATUS" = "unauthenticated" ]; then
   bw login
+  BW_STATUS="locked"
 fi
 if [ "$BW_STATUS" != "unlocked" ]; then
-  export BW_SESSION=$(bw unlock --raw)
+  read -r -s -p "  Bitwarden master password: " BW_PASSWORD
+  echo
+  export BW_SESSION=$(bw unlock --passwordenv BW_PASSWORD --raw)
+  unset BW_PASSWORD
 fi
 
 mkdir -p ~/.ssh
