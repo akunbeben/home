@@ -22,5 +22,6 @@
     # nvim uses mkOutOfStoreSymlink so lazy-lock.json stays writable in the repo
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/nvim";
+    ".config/karabiner/karabiner.json".source = ../configs/karabiner.json;
   };
 }

@@ -29,6 +29,8 @@
       "whatsapp"
 
       # Fonts (Kitty, Neovide)
+      "karabiner-elements"
+
       "font-jetbrains-mono-nerd-font"
       "font-fantasque-sans-mono-nerd-font"
       # DankMono (WezTerm) is a paid font — install manually from https://dank.sh
