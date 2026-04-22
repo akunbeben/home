@@ -1,0 +1,15 @@
+font_family FantasqueSansM Nerd Font
+bold_italic_font auto
+font_size 13.0
+
+macos_option_as_alt yes
+
+hide_window_decorations yes
+show_window_resize_notification no
+confirm_os_window_close 0
+
+map ctrl+insert copy_to_clipboard
+map shift+insert paste_from_clipboard
+
+cursor_shape block
+enable_audio_bell no

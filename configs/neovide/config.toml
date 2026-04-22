@@ -1,0 +1,8 @@
+fork = true
+
+[font]
+normal = ["FantasqueSansM Nerd Font"]
+size = 12
+
+[box-drawing.sizes]
+default = [1, 1]
