@@ -142,11 +142,11 @@
         "rev": "98e2228b643cefd6533ea677ca0ea04ecb97f381",
         "revCount": 1,
         "type": "git",
-        "url": "file:///Users/benny/Projects/home-private"
+        "url": "ssh://git@github.com-personal/akunbeben/home-private"
       },
       "original": {
         "type": "git",
-        "url": "file:///Users/benny/Projects/home-private"
+        "url": "ssh://git@github.com-personal/akunbeben/home-private"
       }
     },
     "root": {
