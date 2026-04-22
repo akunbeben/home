@@ -19,6 +19,7 @@
     options = "--delete-older-than 30d";
   };
 
+  system.primaryUser = "benny";
   nixpkgs.hostPlatform = "aarch64-darwin";
   system.stateVersion = 5;
 }
