@@ -23,7 +23,7 @@
       "kitty"
       "nikitabobko/tap/aerospace"
 
-      "brave-browser"
+
       "tableplus"
       "whatsapp"
       "raycast"
