@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Bootstrap a new macOS machine.
 # Run this ONCE on a fresh device.
+#
+# Prerequisites (do these manually before running):
+#   1. GitHub repo akunbeben/home-private must exist (private config flake input)
+#   2. Run this script: bash ~/Projects/home/scripts/bootstrap.sh
 
 set -e
 
