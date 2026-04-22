@@ -1,4 +1,7 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+let
+  ssht = import ../pkgs/ssht.nix { inherit pkgs; };
+in {
   home.packages = with pkgs; [
     # Shell
     fish
@@ -31,5 +34,21 @@
     # Runtimes
     fnm
     bun
+
+    # Go
+    go
+
+    # Rust (nix-managed, not rustup)
+    rustc
+    cargo
+    rustfmt
+    clippy
+    rust-analyzer
+
+    # Claude Code CLI
+    claude-code
+
+    # Custom
+    ssht
   ];
 }

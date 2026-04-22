@@ -121,10 +121,6 @@
       envsource "$HOME/.env"
 
       fnm env --use-on-cd --shell fish | source
-
-      if test -f "$HOME/.cargo/env.fish"
-          source "$HOME/.cargo/env.fish"
-      end
     '';
 
     functions = {
