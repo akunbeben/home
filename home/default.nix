@@ -13,10 +13,8 @@
   };
 
   home.file = {
-    ".wezterm.lua".source = ../configs/wezterm.lua;
     ".config/tmux/tmux.conf".source = ../configs/tmux.conf;
     ".config/kitty".source = ../configs/kitty;
-    ".config/ghostty".source = ../configs/ghostty;
     ".config/neovide".source = ../configs/neovide;
     ".config/aerospace.toml".source = ../configs/aerospace.toml;
     # nvim uses mkOutOfStoreSymlink so lazy-lock.json stays writable in the repo

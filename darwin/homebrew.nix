@@ -20,9 +20,7 @@
     ];
 
     casks = [
-      "ghostty"
       "kitty"
-      "wezterm"
       "nikitabobko/tap/aerospace"
       "neovide"
       "brave-browser"
