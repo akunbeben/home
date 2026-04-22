@@ -13,11 +13,10 @@
     { name = "MantenApp"; url = "git@github.com-personal:akunbeben/manten.git"; }
     { name = "personal"; url = "git@github.com-personal:akunbeben/blog.git"; }
     { name = "racertui"; url = "git@github.com-personal:akunbeben/racertui.git"; }
-    { name = "ssht"; url = "git@github.com-personal:akunbeben/ssht.git"; }
-    { name = "astro"; url = "git@github.com-personal:akunbeben/hajj-umrah-journeys.git"; }
+    { name = "hajj-astro"; url = "git@github.com-personal:akunbeben/hajj-umrah-journeys.git"; }
     { name = "original"; url = "git@github.com-personal:akunbeben/hajj-umrah-journeys.git"; }
     { name = "website-ekspor"; url = "git@github.com-personal:akunbeben/cricxo.git"; }
-    { name = "astro"; url = "git@github.com-personal:akunbeben/wedding-dreams-hub.git"; }
+    { name = "wedding-astro"; url = "git@github.com-personal:akunbeben/wedding-dreams-hub.git"; }
   ];
 
   work = [

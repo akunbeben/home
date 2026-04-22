@@ -23,6 +23,7 @@
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/nvim";
     ".config/karabiner/karabiner.json".source = ../configs/karabiner.json;
-    ".config/workspaces".source = ../configs/workspaces;
+    ".config/workspaces".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/workspaces";
   };
 }
