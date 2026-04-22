@@ -1,0 +1,15 @@
+{
+  "_note": "Reference only. Set manually at brave://extensions/shortcuts on a new machine.",
+  "Dark Reader (eimadpbcbfnmbkopoojfekhnkhdbieeh)": {
+    "Alt+Shift+A": "addSite",
+    "Alt+Shift+D": "toggle"
+  },
+  "GoFullPage (fdpohaocaechififmbbbbbknoalclacl)": {
+    "Alt+Shift+P": "capture (execute action)"
+  },
+  "Bitwarden (nngceckbapebfimnlniiiahkandclblb)": {
+    "Cmd+Shift+9": "generate_password",
+    "Cmd+Shift+L": "autofill_login",
+    "Cmd+Shift+Y": "open extension (execute action)"
+  }
+}
