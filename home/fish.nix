@@ -80,8 +80,6 @@
       gsta = "git stash";
       gstl = "git stash list";
       gsts = "git stash show -p";
-      gpersonal = ''git config user.email "akunbeben@gmail.com"'';
-      gwork     = ''git config user.email "benny.rahmat@thrive.co.id"'';
 
       # Navigation
       cdd  = "cd -";
@@ -91,6 +89,7 @@
       dl   = "cd ~/Downloads";
       desk = "cd ~/Desktop";
       proj = "cd ~/Projects";
+      work = "cd ~/Work";
       src  = "cd ~/src";
       "..1" = "cd ..";
       "..2" = "cd ../..";
