@@ -16,6 +16,7 @@
       "php"
       "laravel/valet/valet"
       "composer"
+      "wireguard-tools"
     ];
 
     casks = [
