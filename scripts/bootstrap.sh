@@ -103,5 +103,4 @@ fi
 
 echo ""
 echo "==> Done! Manual steps remaining:"
-echo "  1. ssht hash: first rebuild will fail with the real hash — paste it into pkgs/ssht.nix"
-echo "  2. Log out and back in so macOS picks up the new defaults"
+echo "  1. Log out and back in so macOS picks up the new defaults"

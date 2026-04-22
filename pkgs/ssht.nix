@@ -9,10 +9,8 @@ pkgs.buildGoModule {
     rev   = "main";
     # Run: nix-prefetch-github akunbeben ssht --rev main
     # then paste the hash here
-    hash  = pkgs.lib.fakeHash;
+    hash  = "sha256-3Szng7fEqc+nyEMEMWaBxnvJfqecoRAuIqhTzTwCASE=";
   };
 
-  # Set to null first; if build fails with "cannot find module", set to pkgs.lib.fakeHash
-  # and replace with the hash from the error message
-  vendorHash = null;
+  vendorHash = "sha256-TVKmcJadu+VNi5nsKC/j9Gwh9WWbFoR9NCgmYUpkx7o=";
 }
