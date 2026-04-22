@@ -6,6 +6,7 @@
     ./starship.nix
     ./zen.nix
     ./repos.nix
+    ./ssh.nix
   ];
 
   home = {
