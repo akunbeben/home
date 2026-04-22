@@ -1,6 +1,8 @@
 { pkgs, ... }:
 let
   ssht = import ../pkgs/ssht.nix { inherit pkgs; };
+  work = import ../pkgs/work.nix { inherit pkgs; };
+  boc  = import ../pkgs/boc.nix  { inherit pkgs; };
 in {
   home.packages = with pkgs; [
     # Shell
@@ -50,5 +52,7 @@ in {
 
     # Custom
     ssht
+    work
+    boc
   ];
 }

@@ -89,7 +89,6 @@
       dl   = "cd ~/Downloads";
       desk = "cd ~/Desktop";
       proj = "cd ~/Projects";
-      work = "cd ~/Work";
       src  = "cd ~/src";
       "..1" = "cd ..";
       "..2" = "cd ../..";

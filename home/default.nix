@@ -5,6 +5,7 @@
     ./git.nix
     ./starship.nix
     ./zen.nix
+    ./repos.nix
   ];
 
   home = {
@@ -22,5 +23,6 @@
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/nvim";
     ".config/karabiner/karabiner.json".source = ../configs/karabiner.json;
+    ".config/workspaces".source = ../configs/workspaces;
   };
 }
