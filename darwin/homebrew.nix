@@ -28,6 +28,7 @@
       "brave-browser"
       "tableplus"
       "whatsapp"
+      "raycast"
 
       # Fonts (Kitty, Neovide)
       "karabiner-elements"
