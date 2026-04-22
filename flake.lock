@@ -133,12 +133,29 @@
         "type": "github"
       }
     },
+    "private": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1776896912,
+        "narHash": "sha256-kCiUO6IEsRdsBMYOyGGucvE9aGbsTuI3UpmFicgdkDA=",
+        "ref": "refs/heads/main",
+        "rev": "98e2228b643cefd6533ea677ca0ea04ecb97f381",
+        "revCount": 1,
+        "type": "git",
+        "url": "file:///Users/benny/Projects/home-private"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///Users/benny/Projects/home-private"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
+        "private": "private",
         "zen-browser": "zen-browser"
       }
     },

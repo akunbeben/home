@@ -1,6 +1,6 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, inputs, ... }:
 let
-  repos = import ../data/repos.nix;
+  repos = import "${inputs.private}/repos.nix";
   git   = "${pkgs.git}/bin/git";
 
   cloneIfMissing = dest: r: ''

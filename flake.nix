@@ -16,6 +16,10 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    private = {
+      url = "git+ssh://git@github.com-personal/akunbeben/home-private";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, nur, zen-browser, ... }@inputs: {
