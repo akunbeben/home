@@ -18,6 +18,7 @@
       "composer"
       "wireguard-tools"
       "bitwarden-cli"
+      "rtk"
     ];
 
     casks = [

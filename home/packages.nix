@@ -47,6 +47,10 @@ in {
     clippy
     rust-analyzer
 
+    # Cloud & release tools
+    cloudflared
+    goreleaser
+
     # Claude Code CLI
     claude-code
 
