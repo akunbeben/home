@@ -22,7 +22,7 @@
     casks = [
       "kitty"
       "nikitabobko/tap/aerospace"
-      "neovide"
+
       "brave-browser"
       "tableplus"
       "whatsapp"

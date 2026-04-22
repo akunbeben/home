@@ -15,7 +15,7 @@
   home.file = {
     ".config/tmux/tmux.conf".source = ../configs/tmux.conf;
     ".config/kitty".source = ../configs/kitty;
-    ".config/neovide".source = ../configs/neovide;
+
     ".config/aerospace.toml".source = ../configs/aerospace.toml;
     # nvim uses mkOutOfStoreSymlink so lazy-lock.json stays writable in the repo
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink
