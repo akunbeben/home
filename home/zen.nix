@@ -13,6 +13,7 @@ let
 
   commonSettings = {
     "browser.tabs.closeWindowWithLastTab" = false;
+    "zen.tabs.vertical.right-side" = true;
   };
 
   # Note: next/prev tab, move tab, close/new tab to right have no ID
