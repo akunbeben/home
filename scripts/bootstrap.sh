@@ -35,6 +35,7 @@ fi
 if [ "$BW_STATUS" != "unlocked" ]; then
   read -r -s -p "  Bitwarden master password: " BW_PASSWORD
   echo
+  export BW_PASSWORD
   export BW_SESSION=$(bw unlock --passwordenv BW_PASSWORD --raw)
   unset BW_PASSWORD
 fi
