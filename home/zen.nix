@@ -73,6 +73,8 @@ in {
     enable = true;
 
     profiles."Personal" = {
+      id = 0;
+      isDefault = true;
       extensions.packages = commonExtensions;
       settings = commonSettings;
       keyboardShortcutsVersion = commonShortcutsVersion;
@@ -80,6 +82,8 @@ in {
     };
 
     profiles."Work" = {
+      id = 1;
+      isDefault = false;
       extensions.packages = commonExtensions;
       settings = commonSettings;
       keyboardShortcutsVersion = commonShortcutsVersion;
