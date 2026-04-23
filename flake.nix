@@ -35,6 +35,7 @@
             useUserPackages = true;
             users.benny = import ./home;
             extraSpecialArgs = { inherit inputs; };
+            backupFileExtension = "backup";
           };
         }
       ];

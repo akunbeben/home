@@ -13,14 +13,14 @@ pkgs.writeShellScriptBin "boc" ''
   TM='┬' BM='┴' LM='├' RM='┤' CR='┼'
 
   _hline() { printf '%0.s'"$H" $(seq 1 "$1"); }
-  _pad_right() { printf "%-${1}s" "$2"; }
+  _pad_right() { printf "%-''${1}s" "$2"; }
   _pad_center() {
     local width=$1 text=$2
     local len=''${#text}
     local total=$((width - len))
     local left=$((total / 2))
     local right=$((total - left))
-    printf '%*s%s%*s' "$left" '' "$text" "$right" ''
+    printf '%*s%s%*s' "$left" ''' "$text" "$right" '''
   }
 
   _top()    { printf '%s%s%s%s%s%s%s\n' "$TL" "$(_hline "$1")" "$TM" "$(_hline "$2")" "$TM" "$(_hline "$3")" "$TR"; }

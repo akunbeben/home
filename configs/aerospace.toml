@@ -114,8 +114,8 @@ on-mode-changed = []
     cmd-alt-c = "exec-and-forget osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"
     
     # Browser shortcuts (Zen profiles)
-    cmd-b = "exec-and-forget open -na Zen --args -P Personal"
-    cmd-shift-b = "exec-and-forget open -na Zen --args -P Work"
+    cmd-b = "exec-and-forget open -na 'Zen Browser (Beta)' --args -P Personal"
+    cmd-shift-b = "exec-and-forget open -na 'Zen Browser (Beta)' --args -P Work"
 
     # Screenshot shortcuts
     cmd-ctrl-p = "exec-and-forget ~/Projects/dotfiles/bin/screenshot.sh"

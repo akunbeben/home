@@ -6,11 +6,12 @@ let
   cloneIfMissing = dest: r: ''
     if [ ! -d "${dest}/${r.name}/.git" ]; then
       echo "  cloning ${r.name}..."
-      ${git} clone "${r.url}" "${dest}/${r.name}"
+      ${git} clone "${r.url}" "${dest}/${r.name}" || echo "  warning: failed to clone ${r.name}, skipping"
     fi
   '';
 in {
   home.activation.cloneRepos = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    export GIT_SSH_COMMAND="/usr/bin/ssh -F $HOME/.ssh/config"
     sentinel="$HOME/.local/share/home-manager/.repos-cloned"
     if [ ! -f "$sentinel" ]; then
       echo "==> Cloning repos (first time setup)..."

@@ -43,16 +43,28 @@ fi
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 
-bw get notes 6bfe68ff-2775-45dc-9d18-b43400e51209 > ~/.ssh/personal
+# Bitwarden strips the trailing newline from stored notes; private keys
+# require it or ssh-add will reject them as invalid.
+{ bw get notes 6bfe68ff-2775-45dc-9d18-b43400e51209; printf '\n'; } > ~/.ssh/personal
 bw get notes 8dc6a5f7-b7bb-4556-aae0-b43400e52bf6 > ~/.ssh/personal.pub
-bw get notes e93686a1-fb28-4bc1-ab3c-b43400e53e61 > ~/.ssh/work
+{ bw get notes e93686a1-fb28-4bc1-ab3c-b43400e53e61; printf '\n'; } > ~/.ssh/work
 bw get notes 0ce6f34e-3349-422b-9f30-b43400e547b1 > ~/.ssh/work.pub
 
 chmod 600 ~/.ssh/personal ~/.ssh/work
 chmod 644 ~/.ssh/personal.pub ~/.ssh/work.pub
 
-# Write minimal SSH config so git can use the host aliases before nix manages it
-cat > ~/.ssh/config <<'SSHCONF'
+# Load keys into the running ssh-agent and persist them in the macOS Keychain
+# so subsequent SSH connections (including Homebrew taps via git@github.com)
+# can authenticate without prompting.
+ssh-add --apple-use-keychain ~/.ssh/personal ~/.ssh/work
+
+# Write a minimal SSH config so git can use the host aliases before home-manager
+# manages it. Skip if home-manager already owns the file (symlink to Nix store).
+if [ -L ~/.ssh/config ]; then
+  echo "  SSH config already managed by home-manager, skipping."
+else
+  rm -f ~/.ssh/config
+  cat > ~/.ssh/config <<'SSHCONF'
 Host github.com-personal
   HostName github.com
   AddKeysToAgent yes
@@ -70,7 +82,8 @@ Host *
   UseKeychain yes
   IdentityFile ~/.ssh/infra
 SSHCONF
-chmod 600 ~/.ssh/config
+  chmod 600 ~/.ssh/config
+fi
 echo "  SSH keys restored."
 
 # --- 4. Nix ---
@@ -94,16 +107,36 @@ else
   echo "  ~/Projects/home already exists."
 fi
 
+# --- 5.5. Git SSH redirect ---
+# /etc/gitconfig won't exist yet on first run; set the user-level config now
+# so Homebrew can tap GitHub repos without credential prompts.
+echo "==> Configuring git SSH redirect for GitHub..."
+git config --global url."git@github.com-personal:".insteadOf "https://github.com/"
+
 # --- 6. nix-darwin switch ---
 echo "==> Running nix-darwin switch..."
-nix run nix-darwin -- switch --flake ~/Projects/home#Macbook
+# sudo drops $HOME and SSH_AUTH_SOCK; pass them explicitly so nix can fetch
+# the private flake via the github.com-personal SSH host alias.
+sudo \
+  SSH_AUTH_SOCK="$SSH_AUTH_SOCK" \
+  GIT_SSH_COMMAND="ssh -F $HOME/.ssh/config" \
+  nix run nix-darwin -- switch --flake ~/Projects/home#Macbook
 
 # --- 7. Valet ---
-echo "==> Running valet install..."
-if command -v valet &>/dev/null; then
-  valet install
+# laravel/homebrew-valet tap no longer exists; install via Composer instead.
+# Composer bin is not in bash PATH yet; use the known path directly.
+COMPOSER_BIN="$HOME/.config/composer/vendor/bin"
+VALET="$COMPOSER_BIN/valet"
+echo "==> Installing Laravel Valet..."
+if [ -x "$VALET" ]; then
+  echo "  Valet already installed, running valet install..."
+  "$VALET" install
+elif command -v composer &>/dev/null; then
+  echo "  Installing valet via Composer..."
+  composer global require laravel/valet
+  "$VALET" install
 else
-  echo "  valet not found — run manually after brew installs complete"
+  echo "  composer not found — install valet manually: composer global require laravel/valet"
 fi
 
 echo ""

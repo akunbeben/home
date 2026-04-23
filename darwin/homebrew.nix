@@ -9,13 +9,13 @@
 
     taps = [
       "nikitabobko/tap"
-      "laravel/valet"
     ];
 
     brews = [
       "php"
-      "laravel/valet/valet"
       "composer"
+      "dnsmasq"
+      "nginx"
       "wireguard-tools"
       "bitwarden-cli"
       "rtk"

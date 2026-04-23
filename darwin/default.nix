@@ -7,17 +7,19 @@
   users.users.benny = {
     name = "benny";
     home = "/Users/benny";
+    shell = pkgs.fish;
   };
 
   programs.fish.enable = true;
   environment.shells = [ pkgs.fish ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.gc = {
-    automatic = true;
-    interval = { Weekday = 0; Hour = 2; Minute = 0; };
-    options = "--delete-older-than 30d";
-  };
+  nixpkgs.config.allowUnfree = true;
+
+  # Determinate Nix manages its own daemon; hand off Nix management entirely.
+  # nix.settings and nix.gc are unavailable when nix.enable = false.
+  # Determinate enables nix-command and flakes by default, and handles GC
+  # via its own tooling (nix gc / determinate-nixd).
+  nix.enable = false;
 
   system.primaryUser = "benny";
   nixpkgs.hostPlatform = "aarch64-darwin";

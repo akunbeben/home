@@ -15,7 +15,7 @@ pkgs.writeShellScriptBin "work" ''
       exit 1
     fi
 
-    CONF_FILE="$WORKSPACES_DIR/${PROJECT_NAME}.conf"
+    CONF_FILE="$WORKSPACES_DIR/''${PROJECT_NAME}.conf"
     if [ ! -f "$CONF_FILE" ]; then
       mkdir -p "$WORKSPACES_DIR"
       cat >"$CONF_FILE" <<EOF
@@ -48,7 +48,7 @@ pkgs.writeShellScriptBin "work" ''
   SESSION="$PROJECT_NAME"
 
   DEFAULT_CONF="$WORKSPACES_DIR/default.conf"
-  PROJECT_CONF="$WORKSPACES_DIR/${PROJECT_NAME}.conf"
+  PROJECT_CONF="$WORKSPACES_DIR/''${PROJECT_NAME}.conf"
 
   source "$DEFAULT_CONF"
 

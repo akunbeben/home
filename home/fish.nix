@@ -119,9 +119,25 @@
       envsource "$HOME/.env"
 
       fnm env --use-on-cd --shell fish | source
+
+      kitty-theme-sync 2>/dev/null
     '';
 
     functions = {
+      kitty-theme-sync = {
+        body = ''
+          set mode (defaults read -g AppleInterfaceStyle 2>/dev/null)
+          if test "$mode" = Dark
+              set theme macchiato
+          else
+              set theme latte
+          end
+          for sock in /tmp/kitty-*
+              test -S $sock; and /Applications/kitty.app/Contents/MacOS/kitty @ --to unix:$sock \
+                  set-colors --all ~/.config/kitty/themes/$theme.conf 2>/dev/null
+          end
+        '';
+      };
       envsource = {
         body = ''
           set -f envfile "$argv"
