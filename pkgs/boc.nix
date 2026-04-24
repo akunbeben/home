@@ -1,11 +1,10 @@
-{ pkgs }:
+{ pkgs, bocRepos }:
+let
+  repoLines = builtins.concatStringsSep "\n  " (map (r: "\"$HOME/${r}\"") bocRepos);
+in
 pkgs.writeShellScriptBin "boc" ''
   BOC_REPOS=(
-    "$HOME/Work/boc-provision"
-    "$HOME/Work/boc-whmcs-plugin"
-    "$HOME/Work/boc-instant-app-n8n"
-    "$HOME/Work/boc-co-id-frontend"
-    "$HOME/Work/boc-web-id-frontend"
+    ${repoLines}
   )
 
   TL='┌' TR='┐' BL='└' BR='┘'
