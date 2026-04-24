@@ -24,8 +24,8 @@ let
     { id = "key_reload_skip_cache";                      key = "r"; modifiers = { alt = true;  control = false; shift = true;  meta = false; accel = false; }; }
     { id = "focusURLBar";                                key = "l"; modifiers = { alt = true;  control = false; shift = false; meta = false; accel = false; }; }
     { id = "key_toggleToolbox";                          key = "i"; modifiers = { alt = true;  control = false; shift = false; meta = false; accel = false; }; }
-    { id = "zen-compact-mode-toggle";                    key = "e"; modifiers = { alt = true;  control = false; shift = false; meta = false; accel = false; }; }
-    { id = "zen-compact-mode-show-sidebar";              key = "e"; modifiers = { meta = true; shift = true;  control = false; alt = false; accel = false; }; }
+    { id = "zen-compact-mode-show-sidebar";              key = "e"; modifiers = { alt = true;  control = false; shift = false; meta = false; accel = false; }; }
+    { id = "zen-compact-mode-toggle";                    key = "e"; modifiers = { alt = true;  shift = true;  control = false; meta = false; accel = false; }; }
     { id = "key_restoreLastClosedTabOrWindowOrSession";  key = "t"; modifiers = { alt = true;  control = false; shift = true;  meta = false; accel = false; }; }
     { id = "key_openDownloads";                          key = "j"; modifiers = { accel = true; shift = true;  control = false; alt = false; meta = false; }; }
     { id = "key_browserConsole";    disabled = true; }
@@ -40,6 +40,7 @@ let
     { id = "key_selectTab7"; key = "7"; modifiers = { alt = true; control = false; shift = false; meta = false; accel = false; }; }
     { id = "key_selectTab8"; key = "8"; modifiers = { alt = true; control = false; shift = false; meta = false; accel = false; }; }
     { id = "key_selectLastTab"; key = "9"; modifiers = { alt = true; control = false; shift = false; meta = false; accel = false; }; }
+    { id = "zen-split-view-vertical"; key = "v"; modifiers = { alt = true; control = false; shift = false; meta = false; accel = false; }; }
   ];
 in {
   imports = [ inputs.zen-browser.homeModules.default ];

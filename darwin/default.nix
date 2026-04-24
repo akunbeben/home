@@ -13,6 +13,14 @@
   programs.fish.enable = true;
   environment.shells = [ pkgs.fish ];
 
+  system.activationScripts.postActivation.text = ''
+    fish=/run/current-system/sw/bin/fish
+    current=$(dscl . -read /Users/benny UserShell | awk '{print $2}')
+    if [ "$current" != "$fish" ]; then
+      chsh -s "$fish" benny
+    fi
+  '';
+
   nixpkgs.config.allowUnfree = true;
 
   # Determinate Nix manages its own daemon; hand off Nix management entirely.

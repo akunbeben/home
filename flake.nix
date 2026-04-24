@@ -16,6 +16,7 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    googleworkspace-cli.url = "github:googleworkspace/cli";
     private = {
       url = "git+ssh://git@github.com-personal/akunbeben/home-private";
       flake = false;
