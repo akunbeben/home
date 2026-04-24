@@ -7,6 +7,7 @@
       "github.com-work" = {
         hostname = "github.com";
         identityFile = "~/.ssh/work";
+        identitiesOnly = true;
         extraOptions = {
           AddKeysToAgent = "yes";
           UseKeychain = "yes";
@@ -15,6 +16,7 @@
       "github.com-personal" = {
         hostname = "github.com";
         identityFile = "~/.ssh/personal";
+        identitiesOnly = true;
         extraOptions = {
           AddKeysToAgent = "yes";
           UseKeychain = "yes";
