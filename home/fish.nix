@@ -20,6 +20,7 @@
       ai       = "gemini";
       gg       = "goto-ssh";
       dot      = "nvim ~/Projects/home";
+      nixswitch = "sudo SSH_AUTH_SOCK=\"$SSH_AUTH_SOCK\" GIT_SSH_COMMAND=\"ssh -F $HOME/.ssh/config\" darwin-rebuild switch --flake ~/Projects/home#Macbook";
       start    = "sudo systemctl start";
       stop     = "sudo systemctl stop";
       restart  = "sudo systemctl restart";

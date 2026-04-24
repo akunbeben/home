@@ -10,7 +10,8 @@ A nix-darwin + home-manager configuration for a single macOS machine (`aarch64-d
 
 ```bash
 # Apply the full config (system + home-manager)
-sudo darwin-rebuild switch --flake ~/Projects/home#Macbook
+# SSH vars must be passed so sudo can fetch the private flake
+sudo SSH_AUTH_SOCK="$SSH_AUTH_SOCK" GIT_SSH_COMMAND="ssh -F $HOME/.ssh/config" darwin-rebuild switch --flake ~/Projects/home#Macbook
 
 # Bootstrap a brand-new machine (run once)
 bash ~/Projects/home/scripts/bootstrap.sh
