@@ -21,6 +21,22 @@
     fi
   '';
 
+  # System-level SSH host aliases so root/sudo can resolve github.com-personal
+  # during nix evaluation (e.g. darwin-rebuild switch fetching the private flake).
+  environment.etc."ssh/ssh_config.d/github-aliases.conf".text = ''
+    Host github.com-personal
+      HostName github.com
+      User git
+      IdentityFile /Users/benny/.ssh/personal
+      IdentitiesOnly yes
+
+    Host github.com-work
+      HostName github.com
+      User git
+      IdentityFile /Users/benny/.ssh/work
+      IdentitiesOnly yes
+  '';
+
   nixpkgs.config.allowUnfree = true;
 
   # Determinate Nix manages its own daemon; hand off Nix management entirely.
