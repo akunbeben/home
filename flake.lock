@@ -189,11 +189,11 @@
     "private": {
       "flake": false,
       "locked": {
-        "lastModified": 1776896912,
-        "narHash": "sha256-kCiUO6IEsRdsBMYOyGGucvE9aGbsTuI3UpmFicgdkDA=",
+        "lastModified": 1777012683,
+        "narHash": "sha256-8XifQQzILg+E/d9qFUkt4RlhnA9hoa+qLlm26F4nEGM=",
         "ref": "refs/heads/main",
-        "rev": "98e2228b643cefd6533ea677ca0ea04ecb97f381",
-        "revCount": 1,
+        "rev": "c6a1f1d30c3a4edecbd5ce5f2b28913088c912c5",
+        "revCount": 3,
         "type": "git",
         "url": "ssh://git@github.com-personal/akunbeben/home-private"
       },
