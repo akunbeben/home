@@ -26,6 +26,11 @@ in {
     htop
     git
 
+    # Docker
+    docker
+    docker-compose
+    colima
+
     # TUI tools
     lazygit
     lazydocker
