@@ -3,6 +3,8 @@
     enable = true;
     enableFishIntegration = true;
     # All defaults — add settings here to customize
-    settings = {};
+    settings = {
+      add_newline = false;
+    };
   };
 }

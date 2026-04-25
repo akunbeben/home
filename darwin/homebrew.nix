@@ -28,6 +28,7 @@
 
       "tableplus"
       "whatsapp"
+      "telegram"
       "raycast"
 
       "karabiner-elements"
