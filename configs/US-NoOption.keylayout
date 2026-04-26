@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE keyboard SYSTEM "file://localhost/System/Library/DTDs/KeyboardLayout.dtd">
+<!--
+  US No Option — standard US ANSI layout with Option/Option+Shift
+  mapped to the same keymaps as base/shift so no special chars
+  are inserted when Option is held.
+-->
+<keyboard group="0" id="-19525" name="US No Option" maxout="1">
+    <layouts>
+        <layout first="0" last="17" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="18" last="18" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="21" last="23" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="30" last="30" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="31" last="31" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="33" last="34" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="35" last="35" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="37" last="37" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="39" last="39" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="41" last="42" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="45" last="47" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="50" last="50" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="65" last="65" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="67" last="67" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="69" last="69" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="75" last="76" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="78" last="78" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="81" last="92" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="96" last="97" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="98" last="103" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="105" last="107" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="109" last="109" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="111" last="111" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="113" last="117" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="118" last="122" modifiers="Modifiers" mapSet="ANSI"/>
+        <layout first="123" last="126" modifiers="Modifiers" mapSet="ANSI"/>
+    </layouts>
+
+    <modifierMap id="Modifiers" defaultIndex="0">
+        <!-- Base: no modifier, option alone, command alone -->
+        <keyMapSelect mapIndex="0">
+            <modifier keys=""/>
+            <modifier keys="option"/>
+            <modifier keys="command"/>
+            <modifier keys="option command"/>
+            <modifier keys="control"/>
+            <modifier keys="option control"/>
+            <modifier keys="command control"/>
+            <modifier keys="option command control"/>
+        </keyMapSelect>
+        <!-- Shift: shift, option+shift (suppress special chars) -->
+        <keyMapSelect mapIndex="1">
+            <modifier keys="shift"/>
+            <modifier keys="option shift"/>
+            <modifier keys="shift command"/>
+            <modifier keys="option shift command"/>
+            <modifier keys="shift control"/>
+            <modifier keys="option shift control"/>
+            <modifier keys="shift command control"/>
+            <modifier keys="option shift command control"/>
+        </keyMapSelect>
+        <!-- Caps Lock -->
+        <keyMapSelect mapIndex="2">
+            <modifier keys="caps"/>
+            <modifier keys="option caps"/>
+            <modifier keys="caps command"/>
+            <modifier keys="option caps command"/>
+        </keyMapSelect>
+        <!-- Shift + Caps Lock -->
+        <keyMapSelect mapIndex="3">
+            <modifier keys="shift caps"/>
+            <modifier keys="option shift caps"/>
+            <modifier keys="shift caps command"/>
+            <modifier keys="option shift caps command"/>
+        </keyMapSelect>
+    </modifierMap>
+
+    <keyMapSet id="ANSI">
+        <!-- Index 0: base (no modifier / option / command) -->
+        <keyMap index="0">
+            <key code="0"  output="a"/>
+            <key code="1"  output="s"/>
+            <key code="2"  output="d"/>
+            <key code="3"  output="f"/>
+            <key code="4"  output="h"/>
+            <key code="5"  output="g"/>
+            <key code="6"  output="z"/>
+            <key code="7"  output="x"/>
+            <key code="8"  output="c"/>
+            <key code="9"  output="v"/>
+            <key code="11" output="b"/>
+            <key code="12" output="q"/>
+            <key code="13" output="w"/>
+            <key code="14" output="e"/>
+            <key code="15" output="r"/>
+            <key code="16" output="y"/>
+            <key code="17" output="t"/>
+            <key code="18" output="1"/>
+            <key code="19" output="2"/>
+            <key code="20" output="3"/>
+            <key code="21" output="4"/>
+            <key code="22" output="6"/>
+            <key code="23" output="5"/>
+            <key code="24" output="="/>
+            <key code="25" output="9"/>
+            <key code="26" output="7"/>
+            <key code="27" output="-"/>
+            <key code="28" output="8"/>
+            <key code="29" output="0"/>
+            <key code="30" output="]"/>
+            <key code="31" output="o"/>
+            <key code="32" output="u"/>
+            <key code="33" output="["/>
+            <key code="34" output="i"/>
+            <key code="35" output="p"/>
+            <key code="36" output="&#x000D;"/>
+            <key code="37" output="l"/>
+            <key code="38" output="j"/>
+            <key code="39" output="'"/>
+            <key code="40" output="k"/>
+            <key code="41" output=";"/>
+            <key code="42" output="\"/>
+            <key code="43" output=","/>
+            <key code="44" output="/"/>
+            <key code="45" output="n"/>
+            <key code="46" output="m"/>
+            <key code="47" output="."/>
+            <key code="48" output="&#x0009;"/>
+            <key code="49" output=" "/>
+            <key code="50" output="`"/>
+            <key code="51" output="&#x0008;"/>
+            <key code="52" output="&#x0003;"/>
+            <key code="53" output="&#x001B;"/>
+            <key code="65" output="."/>
+            <key code="67" output="*"/>
+            <key code="69" output="+"/>
+            <key code="75" output="/"/>
+            <key code="76" output="&#x0003;"/>
+            <key code="78" output="-"/>
+            <key code="81" output="="/>
+            <key code="82" output="0"/>
+            <key code="83" output="1"/>
+            <key code="84" output="2"/>
+            <key code="85" output="3"/>
+            <key code="86" output="4"/>
+            <key code="87" output="5"/>
+            <key code="88" output="6"/>
+            <key code="89" output="7"/>
+            <key code="91" output="8"/>
+            <key code="92" output="9"/>
+        </keyMap>
+
+        <!-- Index 1: shift / option+shift (suppress special chars) -->
+        <keyMap index="1">
+            <key code="0"  output="A"/>
+            <key code="1"  output="S"/>
+            <key code="2"  output="D"/>
+            <key code="3"  output="F"/>
+            <key code="4"  output="H"/>
+            <key code="5"  output="G"/>
+            <key code="6"  output="Z"/>
+            <key code="7"  output="X"/>
+            <key code="8"  output="C"/>
+            <key code="9"  output="V"/>
+            <key code="11" output="B"/>
+            <key code="12" output="Q"/>
+            <key code="13" output="W"/>
+            <key code="14" output="E"/>
+            <key code="15" output="R"/>
+            <key code="16" output="Y"/>
+            <key code="17" output="T"/>
+            <key code="18" output="!"/>
+            <key code="19" output="@"/>
+            <key code="20" output="#"/>
+            <key code="21" output="$"/>
+            <key code="22" output="^"/>
+            <key code="23" output="%"/>
+            <key code="24" output="+"/>
+            <key code="25" output="("/>
+            <key code="26" output="&amp;"/>
+            <key code="27" output="_"/>
+            <key code="28" output="*"/>
+            <key code="29" output=")"/>
+            <key code="30" output="}"/>
+            <key code="31" output="O"/>
+            <key code="32" output="U"/>
+            <key code="33" output="{"/>
+            <key code="34" output="I"/>
+            <key code="35" output="P"/>
+            <key code="36" output="&#x000D;"/>
+            <key code="37" output="L"/>
+            <key code="38" output="J"/>
+            <key code="39" output="&quot;"/>
+            <key code="40" output="K"/>
+            <key code="41" output=":"/>
+            <key code="42" output="|"/>
+            <key code="43" output="&lt;"/>
+            <key code="44" output="?"/>
+            <key code="45" output="N"/>
+            <key code="46" output="M"/>
+            <key code="47" output="&gt;"/>
+            <key code="48" output="&#x0009;"/>
+            <key code="49" output=" "/>
+            <key code="50" output="~"/>
+            <key code="51" output="&#x0008;"/>
+            <key code="52" output="&#x0003;"/>
+            <key code="53" output="&#x001B;"/>
+            <key code="65" output="."/>
+            <key code="67" output="*"/>
+            <key code="69" output="+"/>
+            <key code="75" output="/"/>
+            <key code="76" output="&#x0003;"/>
+            <key code="78" output="-"/>
+            <key code="81" output="="/>
+            <key code="82" output="0"/>
+            <key code="83" output="1"/>
+            <key code="84" output="2"/>
+            <key code="85" output="3"/>
+            <key code="86" output="4"/>
+            <key code="87" output="5"/>
+            <key code="88" output="6"/>
+            <key code="89" output="7"/>
+            <key code="91" output="8"/>
+            <key code="92" output="9"/>
+        </keyMap>
+
+        <!-- Index 2: caps lock (letters uppercase, symbols same as base) -->
+        <keyMap index="2">
+            <key code="0"  output="A"/>
+            <key code="1"  output="S"/>
+            <key code="2"  output="D"/>
+            <key code="3"  output="F"/>
+            <key code="4"  output="H"/>
+            <key code="5"  output="G"/>
+            <key code="6"  output="Z"/>
+            <key code="7"  output="X"/>
+            <key code="8"  output="C"/>
+            <key code="9"  output="V"/>
+            <key code="11" output="B"/>
+            <key code="12" output="Q"/>
+            <key code="13" output="W"/>
+            <key code="14" output="E"/>
+            <key code="15" output="R"/>
+            <key code="16" output="Y"/>
+            <key code="17" output="T"/>
+            <key code="18" output="1"/>
+            <key code="19" output="2"/>
+            <key code="20" output="3"/>
+            <key code="21" output="4"/>
+            <key code="22" output="6"/>
+            <key code="23" output="5"/>
+            <key code="24" output="="/>
+            <key code="25" output="9"/>
+            <key code="26" output="7"/>
+            <key code="27" output="-"/>
+            <key code="28" output="8"/>
+            <key code="29" output="0"/>
+            <key code="30" output="]"/>
+            <key code="31" output="O"/>
+            <key code="32" output="U"/>
+            <key code="33" output="["/>
+            <key code="34" output="I"/>
+            <key code="35" output="P"/>
+            <key code="36" output="&#x000D;"/>
+            <key code="37" output="L"/>
+            <key code="38" output="J"/>
+            <key code="39" output="'"/>
+            <key code="40" output="K"/>
+            <key code="41" output=";"/>
+            <key code="42" output="\"/>
+            <key code="43" output=","/>
+            <key code="44" output="/"/>
+            <key code="45" output="N"/>
+            <key code="46" output="M"/>
+            <key code="47" output="."/>
+            <key code="48" output="&#x0009;"/>
+            <key code="49" output=" "/>
+            <key code="50" output="`"/>
+            <key code="51" output="&#x0008;"/>
+            <key code="52" output="&#x0003;"/>
+            <key code="53" output="&#x001B;"/>
+            <key code="65" output="."/>
+            <key code="67" output="*"/>
+            <key code="69" output="+"/>
+            <key code="75" output="/"/>
+            <key code="76" output="&#x0003;"/>
+            <key code="78" output="-"/>
+            <key code="81" output="="/>
+            <key code="82" output="0"/>
+            <key code="83" output="1"/>
+            <key code="84" output="2"/>
+            <key code="85" output="3"/>
+            <key code="86" output="4"/>
+            <key code="87" output="5"/>
+            <key code="88" output="6"/>
+            <key code="89" output="7"/>
+            <key code="91" output="8"/>
+            <key code="92" output="9"/>
+        </keyMap>
+
+        <!-- Index 3: shift + caps lock (letters lowercase, symbols shifted) -->
+        <keyMap index="3">
+            <key code="0"  output="a"/>
+            <key code="1"  output="s"/>
+            <key code="2"  output="d"/>
+            <key code="3"  output="f"/>
+            <key code="4"  output="h"/>
+            <key code="5"  output="g"/>
+            <key code="6"  output="z"/>
+            <key code="7"  output="x"/>
+            <key code="8"  output="c"/>
+            <key code="9"  output="v"/>
+            <key code="11" output="b"/>
+            <key code="12" output="q"/>
+            <key code="13" output="w"/>
+            <key code="14" output="e"/>
+            <key code="15" output="r"/>
+            <key code="16" output="y"/>
+            <key code="17" output="t"/>
+            <key code="18" output="!"/>
+            <key code="19" output="@"/>
+            <key code="20" output="#"/>
+            <key code="21" output="$"/>
+            <key code="22" output="^"/>
+            <key code="23" output="%"/>
+            <key code="24" output="+"/>
+            <key code="25" output="("/>
+            <key code="26" output="&amp;"/>
+            <key code="27" output="_"/>
+            <key code="28" output="*"/>
+            <key code="29" output=")"/>
+            <key code="30" output="}"/>
+            <key code="31" output="o"/>
+            <key code="32" output="u"/>
+            <key code="33" output="{"/>
+            <key code="34" output="i"/>
+            <key code="35" output="p"/>
+            <key code="36" output="&#x000D;"/>
+            <key code="37" output="l"/>
+            <key code="38" output="j"/>
+            <key code="39" output="&quot;"/>
+            <key code="40" output="k"/>
+            <key code="41" output=":"/>
+            <key code="42" output="|"/>
+            <key code="43" output="&lt;"/>
+            <key code="44" output="?"/>
+            <key code="45" output="n"/>
+            <key code="46" output="m"/>
+            <key code="47" output="&gt;"/>
+            <key code="48" output="&#x0009;"/>
+            <key code="49" output=" "/>
+            <key code="50" output="~"/>
+            <key code="51" output="&#x0008;"/>
+            <key code="52" output="&#x0003;"/>
+            <key code="53" output="&#x001B;"/>
+            <key code="65" output="."/>
+            <key code="67" output="*"/>
+            <key code="69" output="+"/>
+            <key code="75" output="/"/>
+            <key code="76" output="&#x0003;"/>
+            <key code="78" output="-"/>
+            <key code="81" output="="/>
+            <key code="82" output="0"/>
+            <key code="83" output="1"/>
+            <key code="84" output="2"/>
+            <key code="85" output="3"/>
+            <key code="86" output="4"/>
+            <key code="87" output="5"/>
+            <key code="88" output="6"/>
+            <key code="89" output="7"/>
+            <key code="91" output="8"/>
+            <key code="92" output="9"/>
+        </keyMap>
+    </keyMapSet>
+</keyboard>

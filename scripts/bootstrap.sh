@@ -139,6 +139,15 @@ else
   echo "  composer not found — install valet manually: composer global require laravel/valet"
 fi
 
+# --- 8. Android CLI ---
+echo "==> Checking Android CLI..."
+if ! command -v android &>/dev/null; then
+  echo "  Installing Android CLI..."
+  curl -fsSL https://dl.google.com/android/cli/latest/darwin_arm64/install.sh | bash
+else
+  echo "  Android CLI already installed."
+fi
+
 echo ""
 echo "==> Done! Manual steps remaining:"
 echo "  1. Log out and back in so macOS picks up the new defaults"

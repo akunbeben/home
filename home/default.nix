@@ -45,6 +45,7 @@ in {
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/nvim";
     ".config/karabiner/karabiner.json".source = ../configs/karabiner.json;
+    "Library/Keyboard Layouts/US-NoOption.keylayout".source = ../configs/US-NoOption.keylayout;
     ".config/workspaces".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home-private/workspaces";
   };
