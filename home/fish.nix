@@ -1,4 +1,4 @@
-{ ... }: {
+{ config, ... }: {
   programs.fish = {
     enable = true;
 
@@ -165,11 +165,17 @@
 
   # Custom functions and completions kept as files
   xdg.configFile = {
-    "fish/functions/artisan.fish".source = ../configs/fish/functions/artisan.fish;
-    "fish/functions/eops.fish".source    = ../configs/fish/functions/eops.fish;
-    "fish/completions/artisan.fish".source = ../configs/fish/completions/artisan.fish;
-    "fish/completions/eops.fish".source    = ../configs/fish/completions/eops.fish;
-    "fish/completions/work.fish".source    = ../configs/fish/completions/work.fish;
-    "fish/completions/ssht.fish".source    = ../configs/fish/completions/ssht.fish;
+    "fish/functions/artisan.fish".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/fish/functions/artisan.fish";
+    "fish/functions/eops.fish".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/fish/functions/eops.fish";
+    "fish/completions/artisan.fish".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/fish/completions/artisan.fish";
+    "fish/completions/eops.fish".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/fish/completions/eops.fish";
+    "fish/completions/work.fish".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/fish/completions/work.fish";
+    "fish/completions/ssht.fish".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/fish/completions/ssht.fish";
   };
 }

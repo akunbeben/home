@@ -37,14 +37,18 @@ in {
   };
 
   home.file = {
-    ".config/tmux/tmux.conf".source = ../configs/tmux.conf;
-    ".config/kitty".source = ../configs/kitty;
+    ".config/tmux/tmux.conf".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/tmux.conf";
+    ".config/kitty".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/kitty";
 
-    ".config/aerospace/aerospace.toml".source = ../configs/aerospace.toml;
+    ".config/aerospace/aerospace.toml".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/aerospace.toml";
     # nvim uses mkOutOfStoreSymlink so lazy-lock.json stays writable in the repo
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/nvim";
-    ".config/karabiner/karabiner.json".source = ../configs/karabiner.json;
+    ".config/karabiner/karabiner.json".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/karabiner.json";
     "Library/Keyboard Layouts/US-NoOption.keylayout".source = ../configs/US-NoOption.keylayout;
     ".config/workspaces".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home-private/workspaces";
