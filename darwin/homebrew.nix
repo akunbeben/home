@@ -32,6 +32,7 @@
       "raycast"
 
       "karabiner-elements"
+      "codex"
 
       "font-jetbrains-mono-nerd-font"
       "font-fantasque-sans-mono-nerd-font"

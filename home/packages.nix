@@ -35,6 +35,7 @@ in {
     lazygit
     lazydocker
     lazysql
+    scrcpy
 
     # Editors & multiplexers
     neovim

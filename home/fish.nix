@@ -107,6 +107,7 @@
       fish_add_path $HOME/.local/bin
       fish_add_path $HOME/.lmstudio/bin
       fish_add_path $HOME/.antigravity/antigravity/bin
+      fish_add_path $HOME/Library/Android/sdk/platform-tools
 
       set --export BUN_INSTALL "$HOME/.bun"
       fish_add_path $BUN_INSTALL/bin
