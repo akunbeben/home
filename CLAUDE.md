@@ -26,8 +26,6 @@ There are no tests or lint commands — changes are validated by a successful `d
 | `nixpkgs` | Tracks `nixpkgs-unstable` |
 | `nix-darwin` | macOS system configuration |
 | `home-manager` | User environment |
-| `NUR` | Firefox/Zen browser add-ons |
-| `zen-browser` | Zen browser flake + home module |
 | `private` | SSH-cloned private flake (`akunbeben/home-private`) — contains git identity config and the repo clone list |
 
 ## Directory layout
@@ -37,7 +35,6 @@ darwin/         system-level (homebrew, macOS defaults, shell)
 home/           home-manager modules
   packages.nix  all Nix-managed packages
   fish.nix      shell aliases, abbreviations, functions, path
-  zen.nix       Zen browser profiles + extensions + shortcuts
   repos.nix     auto-clone personal/work repos on first activation
   ssh.nix       SSH match blocks (github.com-personal, github.com-work, *)
   git.nix       delegates to private flake
@@ -57,7 +54,7 @@ scripts/
 ## Package managers split
 
 - **Nix** manages: CLI tools (eza, bat, fd, ripgrep, fzf, jq, lazygit, lazydocker, lazysql, yazi), runtimes (fnm, bun, go, rustc/cargo), editors (neovim, tmux), and the custom pkgs above.
-- **Homebrew** manages: GUI casks (kitty, aerospace, tableplus, karabiner-elements, raycast, fonts) and the PHP/Valet/Composer stack.
+- **Homebrew** manages: GUI casks (kitty, aerospace, Brave Browser, tableplus, karabiner-elements, raycast, fonts) and the PHP/Valet/Composer stack.
 
 ## Key architectural details
 
@@ -66,8 +63,6 @@ scripts/
 **Writable symlinks**: `configs/nvim` and `configs/workspaces` use `mkOutOfStoreSymlink` so `lazy-lock.json` and workspace `.conf` files can be edited in place without a rebuild.
 
 **SSH identities**: Two GitHub host aliases are configured — `github.com-personal` (uses `~/.ssh/personal`) and `github.com-work` (uses `~/.ssh/work`). All other hosts use `~/.ssh/infra`. Clone URLs must use these aliases to pick the right key.
-
-**Zen browser profiles**: Each profile requires a unique integer `id` and exactly one must have `isDefault = true`. Tab shortcuts (next/prev, move, close/new-to-right) have no id in zen-keyboard-shortcuts.json and must be configured manually in the Zen UI.
 
 **Updating ssht hash**: When bumping the `ssht` Go package to a new commit, run `nix-prefetch-github akunbeben ssht --rev main` and paste the result into `pkgs/ssht.nix`.
 

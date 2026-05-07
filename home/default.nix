@@ -15,7 +15,6 @@ in {
     ./fish.nix
     ./git.nix
     ./starship.nix
-    ./zen.nix
     ./repos.nix
     ./ssh.nix
   ];

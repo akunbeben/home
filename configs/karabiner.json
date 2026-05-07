@@ -136,66 +136,6 @@
                 "type": "basic"
               }
             ]
-          },
-          {
-            "description": "Zen: Alt+J/K \u2192 next/prev tab (Ctrl+Tab / Ctrl+Shift+Tab)",
-            "manipulators": [
-              {
-                "conditions": [
-                  {
-                    "bundle_identifiers": [
-                      "app\\.zen-browser\\.zen"
-                    ],
-                    "type": "frontmost_application_if"
-                  }
-                ],
-                "from": {
-                  "key_code": "j",
-                  "modifiers": {
-                    "mandatory": [
-                      "option"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "tab",
-                    "modifiers": [
-                      "control"
-                    ]
-                  }
-                ],
-                "type": "basic"
-              },
-              {
-                "conditions": [
-                  {
-                    "bundle_identifiers": [
-                      "app\\.zen-browser\\.zen"
-                    ],
-                    "type": "frontmost_application_if"
-                  }
-                ],
-                "from": {
-                  "key_code": "k",
-                  "modifiers": {
-                    "mandatory": [
-                      "option"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "tab",
-                    "modifiers": [
-                      "control",
-                      "shift"
-                    ]
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
           }
         ]
       },

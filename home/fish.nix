@@ -108,6 +108,8 @@
       fish_add_path $HOME/.lmstudio/bin
       fish_add_path $HOME/.antigravity/antigravity/bin
       fish_add_path $HOME/Library/Android/sdk/platform-tools
+      fish_add_path $HOME/Library/Android/sdk/commandline-tools/bin
+      fish_add_path $HOME/Android-Development/flutter/bin
 
       set --export BUN_INSTALL "$HOME/.bun"
       fish_add_path $BUN_INSTALL/bin

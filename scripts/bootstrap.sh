@@ -66,18 +66,21 @@ else
   rm -f ~/.ssh/config
   cat > ~/.ssh/config <<'SSHCONF'
 Host github.com-personal
+  IdentitiesOnly yes
   HostName github.com
   AddKeysToAgent yes
   UseKeychain yes
   IdentityFile ~/.ssh/personal
 
 Host github.com-work
+  IdentitiesOnly yes
   HostName github.com
   AddKeysToAgent yes
   UseKeychain yes
   IdentityFile ~/.ssh/work
 
 Host *
+  IdentitiesOnly yes
   AddKeysToAgent yes
   UseKeychain yes
   IdentityFile ~/.ssh/infra

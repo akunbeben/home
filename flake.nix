@@ -11,11 +11,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nur.url = "github:nix-community/NUR";
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     googleworkspace-cli.url = "github:googleworkspace/cli";
     private = {
       url = "git+ssh://git@github.com-personal/akunbeben/home-private";
@@ -23,7 +18,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, nur, zen-browser, ... }@inputs: {
+  outputs = { self, nixpkgs, nix-darwin, home-manager, ... }@inputs: {
     darwinConfigurations.Macbook = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = { inherit inputs; };

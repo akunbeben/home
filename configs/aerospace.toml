@@ -45,7 +45,14 @@ automatically-unhide-macos-hidden-apps = true
 # even when they are invisible.
 # This config version is only available since 'config-version = 2'
 # Fallback value (if you omit the key): persistent-workspaces = []
-persistent-workspaces = ["1", "2", "3", "4"]
+persistent-workspaces = ["1", "2", "3", "4", "5", "6", "7", "8"]
+
+# Keep second-screen workspaces pinned to the non-main monitor.
+[workspace-to-monitor-force-assignment]
+    5 = 'secondary'
+    6 = 'secondary'
+    7 = 'secondary'
+    8 = 'secondary'
 
 # A callback that runs every time binding mode changes
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -113,9 +120,9 @@ on-mode-changed = []
     cmd-e = "exec-and-forget open -a Finder"
     cmd-alt-c = "exec-and-forget osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"
     
-    # Browser shortcuts (Zen profiles)
-    cmd-b = "exec-and-forget open -na 'Zen Browser (Beta)' --args -P Personal"
-    cmd-shift-b = "exec-and-forget open -na 'Zen Browser (Beta)' --args -P Work"
+    # Browser shortcuts (Brave profiles).
+    cmd-b = "exec-and-forget open -n -a 'Brave Browser' --args --profile-directory=Default"
+    cmd-shift-b = "exec-and-forget open -n -a 'Brave Browser' --args --profile-directory='Profile 1'"
 
     # Screenshot shortcuts
     cmd-ctrl-p = "exec-and-forget ~/Projects/dotfiles/bin/screenshot.sh"
@@ -145,12 +152,20 @@ on-mode-changed = []
     cmd-2 = 'workspace 2'
     cmd-3 = 'workspace 3'
     cmd-4 = 'workspace 4'
+    cmd-5 = 'workspace 5'
+    cmd-6 = 'workspace 6'
+    cmd-7 = 'workspace 7'
+    cmd-8 = 'workspace 8'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
     cmd-shift-1 = 'move-node-to-workspace 1 --focus-follows-window'
     cmd-shift-2 = 'move-node-to-workspace 2 --focus-follows-window'
     cmd-shift-3 = 'move-node-to-workspace 3 --focus-follows-window'
     cmd-shift-4 = 'move-node-to-workspace 4 --focus-follows-window'
+    cmd-shift-5 = 'move-node-to-workspace 5 --focus-follows-window'
+    cmd-shift-6 = 'move-node-to-workspace 6 --focus-follows-window'
+    cmd-shift-7 = 'move-node-to-workspace 7 --focus-follows-window'
+    cmd-shift-8 = 'move-node-to-workspace 8 --focus-follows-window'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     # alt-tab = 'workspace-back-and-forth'

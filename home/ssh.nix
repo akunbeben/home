@@ -24,6 +24,7 @@
       };
       "*" = {
         identityFile = "~/.ssh/infra";
+        identitiesOnly = true;
         extraOptions = {
           AddKeysToAgent = "yes";
           UseKeychain = "yes";
