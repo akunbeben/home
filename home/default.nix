@@ -25,6 +25,8 @@ in {
     stateVersion = "24.11";
   };
 
+  manual.manpages.enable = false;
+
   launchd.agents.kitty-theme-sync = {
     enable = true;
     config = {

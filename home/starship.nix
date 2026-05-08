@@ -5,6 +5,7 @@
     # All defaults — add settings here to customize
     settings = {
       add_newline = false;
+      gcloud.disabled = true;
     };
   };
 }

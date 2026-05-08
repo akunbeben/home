@@ -4,7 +4,7 @@ let
   work     = import ../pkgs/work.nix { inherit pkgs; };
   bocRepos = import "${inputs.private}/boc.nix";
   boc      = import ../pkgs/boc.nix  { inherit pkgs bocRepos; };
-  gws      = inputs.googleworkspace-cli.packages.${pkgs.system}.default;
+  gws      = inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in {
   home.packages = with pkgs; [
     # Shell
@@ -25,6 +25,7 @@ in {
     curl
     htop
     git
+    gh
 
     # Docker
     docker

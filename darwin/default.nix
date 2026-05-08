@@ -13,6 +13,11 @@
   programs.fish.enable = true;
   environment.shells = [ pkgs.fish ];
 
+  # Avoid building nix-darwin's generated option docs, which currently emit
+  # a store-path context warning during evaluation.
+  documentation.doc.enable = false;
+  documentation.man.enable = false;
+
   system.activationScripts.postActivation.text = ''
     fish=/run/current-system/sw/bin/fish
     current=$(dscl . -read /Users/benny UserShell | awk '{print $2}')
