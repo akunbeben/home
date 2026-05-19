@@ -2,6 +2,8 @@
 let
   ssht     = import ../pkgs/ssht.nix { inherit pkgs; };
   work     = import ../pkgs/work.nix { inherit pkgs; };
+  eops     = import ../pkgs/eops.nix { inherit pkgs; };
+  opencode = import ../pkgs/opencode.nix { inherit pkgs; };
   bocRepos = import "${inputs.private}/boc.nix";
   boc      = import ../pkgs/boc.nix  { inherit pkgs bocRepos; };
   gws      = inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default;
@@ -63,10 +65,12 @@ in {
 
     # Claude Code CLI
     claude-code
+    opencode
 
     # Custom
     ssht
     work
+    eops
     boc
     gws
   ];

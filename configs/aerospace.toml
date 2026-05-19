@@ -118,11 +118,12 @@ on-mode-changed = []
     cmd-d = "exec-and-forget open -a TablePlus"
     cmd-w = "exec-and-forget open -a WhatsApp"
     cmd-e = "exec-and-forget open -a Finder"
+    alt-c = "exec-and-forget open -a Codex"
     cmd-alt-c = "exec-and-forget osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"
     
-    # Browser shortcuts (Brave profiles).
-    cmd-b = "exec-and-forget open -n -a 'Brave Browser' --args --profile-directory=Default"
-    cmd-shift-b = "exec-and-forget open -n -a 'Brave Browser' --args --profile-directory='Profile 1'"
+    # Browser shortcuts (Chrome debug profiles).
+    cmd-b = "exec-and-forget open -n -a 'Brave Browser' --args --remote-debugging-port=9222 --profile-directory=Default"
+    cmd-shift-b = "exec-and-forget open -n -a 'Brave Browser' --args --remote-debugging-port=9222 --profile-directory='Profile 1'"
 
     # Screenshot shortcuts
     cmd-ctrl-p = "exec-and-forget ~/Projects/dotfiles/bin/screenshot.sh"

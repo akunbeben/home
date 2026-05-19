@@ -10,6 +10,7 @@
     taps = [
       "homebrew/cask"
       "nikitabobko/tap"
+      "vicentereig/tap"
     ];
 
     brews = [
@@ -20,6 +21,7 @@
       "wireguard-tools"
       "bitwarden-cli"
       "rtk"
+      "whatsapp-cli"
     ];
 
     casks = [
@@ -29,6 +31,7 @@
 
       "tableplus"
       "brave-browser"
+      "google-chrome"
       "whatsapp"
       "telegram"
       "raycast"

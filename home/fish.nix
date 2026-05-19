@@ -20,7 +20,7 @@
       ai       = "gemini";
       gg       = "goto-ssh";
       dot      = "nvim ~/Projects/home";
-      nixswitch = "sudo SSH_AUTH_SOCK=\"$SSH_AUTH_SOCK\" GIT_SSH_COMMAND=\"ssh -F $HOME/.ssh/config\" darwin-rebuild switch --flake ~/Projects/home#Macbook";
+      nx       = "sudo SSH_AUTH_SOCK=\"$SSH_AUTH_SOCK\" GIT_SSH_COMMAND=\"ssh -F $HOME/.ssh/config\" darwin-rebuild switch --flake ~/Projects/home#Macbook";
       start    = "sudo systemctl start";
       stop     = "sudo systemctl stop";
       restart  = "sudo systemctl restart";
@@ -169,8 +169,6 @@
   xdg.configFile = {
     "fish/functions/artisan.fish".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/fish/functions/artisan.fish";
-    "fish/functions/eops.fish".source = config.lib.file.mkOutOfStoreSymlink
-      "${config.home.homeDirectory}/Projects/home/configs/fish/functions/eops.fish";
     "fish/completions/artisan.fish".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/fish/completions/artisan.fish";
     "fish/completions/eops.fish".source = config.lib.file.mkOutOfStoreSymlink

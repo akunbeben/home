@@ -4,9 +4,16 @@
 
 vim.opt.scrolloff = 40
 vim.opt.termguicolors = true
+
 vim.wo.wrap = false
 vim.wo.linebreak = true
 vim.wo.list = false
 
 vim.g.neovide_cursor_trail_size = 1.0
 vim.g.neovide_cursor_animation_length = 0.04
+
+vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
+    callback = function()
+        vim.opt_local.spell = false
+    end,
+})
