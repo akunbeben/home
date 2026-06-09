@@ -3,10 +3,12 @@ let
   kittyBin = "/Applications/kitty.app/Contents/MacOS/kitty";
   syncScript = ''
     MODE=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
-    [ "$MODE" = "Dark" ] && THEME=macchiato || THEME=latte
+    [ "$MODE" = "Dark" ] \
+      && THEME="$HOME/.config/kitty/kitty-themes/themes/Dracula.conf" \
+      || THEME="$HOME/.config/kitty/themes/latte.conf"
     for SOCK in /tmp/kitty-*; do
       [ -S "$SOCK" ] && ${kittyBin} @ --to "unix:$SOCK" \
-        set-colors --all "$HOME/.config/kitty/themes/$THEME.conf" 2>/dev/null || true
+        set-colors --all "$THEME" 2>/dev/null || true
     done
   '';
 in {

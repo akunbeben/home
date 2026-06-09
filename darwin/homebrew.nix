@@ -4,6 +4,7 @@
     onActivation = {
       autoUpdate = true;
       cleanup = "uninstall";
+      extraFlags = [ "--force-cleanup" ];
       upgrade = true;
     };
 
@@ -22,6 +23,7 @@
       "bitwarden-cli"
       "rtk"
       "whatsapp-cli"
+      "sherlock"
     ];
 
     casks = [
@@ -30,6 +32,7 @@
 
 
       "tableplus"
+      "dbngin"
       "brave-browser"
       "google-chrome"
       "whatsapp"

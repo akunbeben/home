@@ -17,7 +17,7 @@
       uninstall = "brew uninstall";
       ls       = "eza --long --icons --group-directories-first";
       ll       = "eza --long --icons --group-directories-first --all";
-      ai       = "gemini";
+      ai       = "codex";
       gg       = "goto-ssh";
       dot      = "nvim ~/Projects/home";
       nx       = "sudo SSH_AUTH_SOCK=\"$SSH_AUTH_SOCK\" GIT_SSH_COMMAND=\"ssh -F $HOME/.ssh/config\" darwin-rebuild switch --flake ~/Projects/home#Macbook";
@@ -44,7 +44,7 @@
       seeder     = "php artisan make:seeder";
       tinker     = "php artisan tinker";
       rl         = "php artisan route:list";
-      lint       = "./vendor/bin/pint";
+      lint       = "composer lint";
 
       # Misc
       delete = "rm -rfv";
@@ -132,13 +132,13 @@
         body = ''
           set mode (defaults read -g AppleInterfaceStyle 2>/dev/null)
           if test "$mode" = Dark
-              set theme macchiato
+              set theme ~/.config/kitty/kitty-themes/themes/Dracula.conf
           else
-              set theme latte
+              set theme ~/.config/kitty/themes/latte.conf
           end
           for sock in /tmp/kitty-*
               test -S $sock; and /Applications/kitty.app/Contents/MacOS/kitty @ --to unix:$sock \
-                  set-colors --all ~/.config/kitty/themes/$theme.conf 2>/dev/null
+                  set-colors --all $theme 2>/dev/null
           end
         '';
       };

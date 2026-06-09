@@ -17,3 +17,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
         vim.opt_local.spell = false
     end,
 })
+
+pcall(function()
+    vim.fn.serverstart(vim.fn.stdpath("run") .. "/pi-" .. vim.fn.getpid() .. ".sock")
+end)

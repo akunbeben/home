@@ -13,6 +13,12 @@ return {
                                 associations = { "*.php", "*.blade.php" }, -- Associating .blade.php files as well
                                 maxSize = 5000000,
                             },
+                            strict = true,
+                            diagnostics = {
+                                undefinedMethods = true,
+                                undefinedTypes = true,
+                                undefinedFunctions = true,
+                            },
                         },
                     },
                 },
