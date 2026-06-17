@@ -75,10 +75,10 @@ on-mode-changed = []
 [gaps]
     inner.horizontal = 8
     inner.vertical =   0
-    outer.left =       10
-    outer.bottom =     10
-    outer.top =        10
-    outer.right =      10
+    outer.left =       5
+    outer.bottom =     5
+    outer.top =        5
+    outer.right =      5
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -113,22 +113,21 @@ on-mode-changed = []
     # end tell'
     # '''
 
-    cmd-t = "exec-and-forget open -n -a Kitty"
-    cmd-r = "exec-and-forget open -a System\\ Settings"
-    cmd-d = "exec-and-forget open -a TablePlus"
-    cmd-w = "exec-and-forget open -a WhatsApp"
-    cmd-e = "exec-and-forget open -a Finder"
+    alt-t = "exec-and-forget open -n -a Kitty"
+    alt-r = "exec-and-forget open -a System\\ Settings"
+    alt-d = "exec-and-forget open -a TablePlus"
+    alt-w = "exec-and-forget open -a WhatsApp"
+    alt-e = "exec-and-forget open -a Finder"
     alt-c = "exec-and-forget open -a Codex"
     cmd-alt-c = "exec-and-forget osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"
     
     # Browser shortcuts (Chrome debug profiles).
-    cmd-b = "exec-and-forget open -n -a 'Brave Browser' --args --remote-debugging-port=9222 --profile-directory=Default"
-    cmd-shift-b = "exec-and-forget open -n -a 'Brave Browser' --args --remote-debugging-port=9222 --profile-directory='Profile 1'"
+    alt-b = "exec-and-forget open -n -a 'Brave Browser' --args --remote-debugging-port=9222 --profile-directory=Default"
+    alt-shift-b = "exec-and-forget open -n -a 'Brave Browser' --args --remote-debugging-port=9222 --profile-directory='Profile 1'"
 
     # Screenshot shortcuts
-    cmd-ctrl-p = "exec-and-forget ~/Projects/dotfiles/bin/screenshot.sh"
-    cmd-shift-p = "exec-and-forget ~/Projects/dotfiles/bin/screenshot.sh"
-    cmd-alt-p = "exec-and-forget ~/Projects/dotfiles/bin/screenshot.sh -w"
+    alt-ctrl-p = "exec-and-forget ~/Projects/dotfiles/bin/screenshot.sh"
+    alt-shift-p = "exec-and-forget ~/Projects/dotfiles/bin/screenshot.sh"
     cmd-alt-shift-s = "exec-and-forget screencapture -c"
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
@@ -136,8 +135,11 @@ on-mode-changed = []
     alt-comma = 'layout accordion horizontal vertical'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-    cmd-h = 'focus left'
-    cmd-l = 'focus right'
+    # Let Kitty/tmux receive Option+h/l for pane selection.
+    alt-h = 'focus left'
+    alt-l = 'focus right'
+    alt-j = 'focus down'
+    alt-k = 'focus up'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move
     cmd-alt-h = 'move left'
@@ -146,28 +148,29 @@ on-mode-changed = []
     cmd-alt-k = 'move up'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#resize
-    cmd-shift-h = 'resize smart -50'
-    cmd-shift-l = 'resize smart +50'
+    # Let Kitty/tmux receive Option+Shift+h/l for pane resize.
+    # alt-shift-h = 'resize smart -50'
+    # alt-shift-l = 'resize smart +50'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-    cmd-1 = 'workspace 1'
-    cmd-2 = 'workspace 2'
-    cmd-3 = 'workspace 3'
-    cmd-4 = 'workspace 4'
-    cmd-5 = 'workspace 5'
-    cmd-6 = 'workspace 6'
-    cmd-7 = 'workspace 7'
-    cmd-8 = 'workspace 8'
+    alt-1 = 'workspace 1'
+    alt-2 = 'workspace 2'
+    alt-3 = 'workspace 3'
+    alt-4 = 'workspace 4'
+    alt-5 = 'workspace 5'
+    alt-6 = 'workspace 6'
+    alt-7 = 'workspace 7'
+    alt-8 = 'workspace 8'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-    cmd-shift-1 = 'move-node-to-workspace 1 --focus-follows-window'
-    cmd-shift-2 = 'move-node-to-workspace 2 --focus-follows-window'
-    cmd-shift-3 = 'move-node-to-workspace 3 --focus-follows-window'
-    cmd-shift-4 = 'move-node-to-workspace 4 --focus-follows-window'
-    cmd-shift-5 = 'move-node-to-workspace 5 --focus-follows-window'
-    cmd-shift-6 = 'move-node-to-workspace 6 --focus-follows-window'
-    cmd-shift-7 = 'move-node-to-workspace 7 --focus-follows-window'
-    cmd-shift-8 = 'move-node-to-workspace 8 --focus-follows-window'
+    alt-shift-1 = 'move-node-to-workspace 1 --focus-follows-window'
+    alt-shift-2 = 'move-node-to-workspace 2 --focus-follows-window'
+    alt-shift-3 = 'move-node-to-workspace 3 --focus-follows-window'
+    alt-shift-4 = 'move-node-to-workspace 4 --focus-follows-window'
+    alt-shift-5 = 'move-node-to-workspace 5 --focus-follows-window'
+    alt-shift-6 = 'move-node-to-workspace 6 --focus-follows-window'
+    alt-shift-7 = 'move-node-to-workspace 7 --focus-follows-window'
+    alt-shift-8 = 'move-node-to-workspace 8 --focus-follows-window'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     # alt-tab = 'workspace-back-and-forth'
