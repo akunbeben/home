@@ -1,4 +1,8 @@
 { ... }: {
+  system.activationScripts.postActivation.text = ''
+    /usr/bin/pmset -a displaysleep 2
+  '';
+
   # Redirect GitHub HTTPS to the personal SSH alias so Homebrew can tap
   # public repos without credential prompts. Brew runs as the user but
   # reads /etc/gitconfig before home-manager has applied ~/.gitconfig.

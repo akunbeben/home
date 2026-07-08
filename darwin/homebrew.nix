@@ -19,6 +19,7 @@
       "composer"
       "dnsmasq"
       "nginx"
+      "openjdk@21"
       "wireguard-tools"
       "bitwarden-cli"
       "rtk"
@@ -33,7 +34,13 @@
 
       "tableplus"
       "dbngin"
-      "brave-browser"
+      {
+        name = "brave-browser";
+        greedy = true;
+        postinstall = ''
+          /usr/bin/xattr -dr com.apple.FinderInfo '/Applications/Brave Browser.app'
+        '';
+      }
       "google-chrome"
       "whatsapp"
       "telegram"
@@ -44,6 +51,7 @@
 
       "font-jetbrains-mono-nerd-font"
       "font-fantasque-sans-mono-nerd-font"
+      "font-sf-mono-nerd-font-ligaturized"
     ];
   };
 

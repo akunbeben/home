@@ -11,6 +11,20 @@ let
         set-colors --all "$THEME" 2>/dev/null || true
     done
   '';
+  workHoursDisplayAwakeScript = ''
+    weekday=$(/bin/date +%u)
+    [ "$weekday" -le 5 ] || exit 0
+
+    hour=$(/bin/date +%H | /usr/bin/sed 's/^0//')
+    minute=$(/bin/date +%M | /usr/bin/sed 's/^0//')
+    second=$(/bin/date +%S | /usr/bin/sed 's/^0//')
+    now=$((hour * 3600 + minute * 60 + second))
+    start=$((8 * 3600))
+    end=$((17 * 3600))
+
+    [ "$now" -ge "$start" ] && [ "$now" -lt "$end" ] || exit 0
+    exec /usr/bin/caffeinate -d -t "$((end - now))"
+  '';
 in {
   imports = [
     ./packages.nix
@@ -36,6 +50,20 @@ in {
       ProgramArguments = [ "/bin/sh" "-c" syncScript ];
       WatchPaths = [ "${config.home.homeDirectory}/Library/Preferences/.GlobalPreferences.plist" ];
       RunAtLoad = true;
+    };
+  };
+
+  launchd.agents.work-hours-display-awake = {
+    enable = true;
+    config = {
+      Label = "com.benny.work-hours-display-awake";
+      ProgramArguments = [ "/bin/sh" "-c" workHoursDisplayAwakeScript ];
+      RunAtLoad = true;
+      StartCalendarInterval = map (Weekday: {
+        inherit Weekday;
+        Hour = 8;
+        Minute = 0;
+      }) [ 1 2 3 4 5 ];
     };
   };
 

@@ -110,12 +110,16 @@
       fish_add_path $HOME/Library/Android/sdk/platform-tools
       fish_add_path $HOME/Library/Android/sdk/commandline-tools/bin
       fish_add_path $HOME/Android-Development/flutter/bin
+      fish_add_path /opt/homebrew/opt/openjdk@21/bin
+      fish_add_path $HOME/.cargo/bin
 
       set --export BUN_INSTALL "$HOME/.bun"
       fish_add_path $BUN_INSTALL/bin
 
       set -gx PNPM_HOME $HOME/Library/pnpm
       fish_add_path $PNPM_HOME
+
+      set -gx JAVA_HOME /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home
 
       set fish_greeting
       set -gx EDITOR nvim
