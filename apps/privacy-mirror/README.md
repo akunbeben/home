@@ -8,8 +8,8 @@ The output window stays on the main display behind normal windows. AeroSpace is 
 Privacy Mirror windows so the shareable output does not take over the tiling layout. The separate control
 window may move with its AeroSpace workspace without affecting the share.
 
-The local output window is parked at the screen edge by default so it remains shareable without filling
-the desktop. Use the `PM` menu bar item to show or park it again.
+The local output window is parked below the desktop layer by default so it remains shareable without
+covering the desktop. Use the `PM` menu bar item to show or park it again.
 
 ## Configuration
 

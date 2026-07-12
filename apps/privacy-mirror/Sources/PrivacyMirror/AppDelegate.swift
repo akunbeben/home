@@ -3,7 +3,6 @@ import PrivacyMirrorCore
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
-    private let parkedOutputVisibleWidth: CGFloat = 10
     private var outputWindow: NSWindow?
     private var mirrorView: MirrorView?
     private var statusItem: NSStatusItem?
@@ -160,15 +159,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     @objc private func showOutputWindow() {
         guard let outputWindow, let screen = NSScreen.main else { return }
+        outputWindow.level = .normal
         outputWindow.setFrame(screen.frame, display: true)
         outputWindow.orderFrontRegardless()
     }
 
     @objc private func parkOutputWindow() {
         guard let outputWindow, let screen = NSScreen.main else { return }
-        var frame = screen.frame
-        frame.origin.x = screen.frame.maxX - parkedOutputVisibleWidth
-        outputWindow.setFrame(frame, display: true)
+        outputWindow.level = NSWindow.Level(
+            rawValue: Int(CGWindowLevelForKey(.desktopIconWindow)) - 1
+        )
+        outputWindow.setFrame(screen.frame, display: true)
         outputWindow.orderBack(nil)
     }
 
