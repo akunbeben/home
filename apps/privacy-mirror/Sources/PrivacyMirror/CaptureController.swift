@@ -154,10 +154,6 @@ final class CaptureController: NSObject {
             false,
             onScreenWindowsOnly: false
         )
-        let visibleContent = try await SCShareableContent.excludingDesktopWindows(
-            false,
-            onScreenWindowsOnly: true
-        )
         try Task.checkCancellation()
 
         let workspaces = configuration.excludedWorkspaces
@@ -167,21 +163,22 @@ final class CaptureController: NSObject {
         }.value
         try Task.checkCancellation()
 
-        guard let display = visibleContent.displays.first(where: { $0.displayID == CGMainDisplayID() }) else {
+        guard let display = allContent.displays.first(where: { $0.displayID == CGMainDisplayID() }) else {
             throw CaptureError.mainDisplayNotFound
         }
 
+        let visibleWindows = allContent.windows.filter(\.isOnScreen)
         let ownBundleID = Bundle.main.bundleIdentifier
         let managedPrivateWindows = allContent.windows.filter { privateWindowIDs.contains($0.windowID) }
         let privateProcessIDs = Set(
             managedPrivateWindows.compactMap { $0.owningApplication?.processID }
         )
-        let privateWindows = visibleContent.windows.filter { window in
+        let privateWindows = visibleWindows.filter { window in
             privateWindowIDs.contains(window.windowID)
                 || window.owningApplication.map { privateProcessIDs.contains($0.processID) } == true
         }
         let expandedPrivateWindowIDs = Set(privateWindows.map(\.windowID))
-        let includedWindows = visibleContent.windows.filter { window in
+        let includedWindows = visibleWindows.filter { window in
             !expandedPrivateWindowIDs.contains(window.windowID)
                 && window.owningApplication?.bundleIdentifier != ownBundleID
         }
@@ -249,6 +246,7 @@ final class CaptureController: NSObject {
     }
 
     private func handle(_ event: AeroSpaceEvent) {
+        guard active else { return }
         switch event {
         case .windowMoveBinding:
             // binding-triggered is emitted before AeroSpace runs the move. Keep output blank until
