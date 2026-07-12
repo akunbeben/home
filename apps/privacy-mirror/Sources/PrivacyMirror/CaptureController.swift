@@ -13,6 +13,7 @@ final class CaptureController: NSObject {
     private var stream: SCStream?
     private var operation: Task<Void, Never>?
     private var subscription: AeroSpaceSubscription?
+    private var deferredRefresh: DispatchWorkItem?
     private var gate = CaptureGate()
     private var stopped = false
 
@@ -62,6 +63,8 @@ final class CaptureController: NSObject {
         gate.invalidate()
         subscription?.stop()
         subscription = nil
+        deferredRefresh?.cancel()
+        deferredRefresh = nil
         operation?.cancel()
         operation = nil
 
@@ -74,6 +77,8 @@ final class CaptureController: NSObject {
     private func transition(shouldRefresh: Bool) -> Task<Void, Never>? {
         guard !stopped else { return nil }
 
+        deferredRefresh?.cancel()
+        deferredRefresh = nil
         let requestedGeneration = gate.invalidate()
         let requestedConfiguration = configuration
         let previousOperation = operation
@@ -234,11 +239,21 @@ final class CaptureController: NSObject {
         switch event {
         case .windowMoveBinding:
             // binding-triggered is emitted before AeroSpace runs the move. Keep output blank until
-            // the resulting focused-workspace-changed event provides the post-move state.
+            // the resulting state change provides the post-move state. Some moves do not emit a
+            // second event, so schedule a short fallback refresh to avoid staying blank forever.
             transition(shouldRefresh: false)
+            scheduleDeferredRefresh()
         case .stateChanged:
             transition(shouldRefresh: true)
         }
+    }
+
+    private func scheduleDeferredRefresh() {
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.transition(shouldRefresh: true)
+        }
+        deferredRefresh = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(350), execute: workItem)
     }
 
     private func failClosed(_ error: Error, generation requestedGeneration: Int? = nil) {
