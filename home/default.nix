@@ -85,11 +85,18 @@ in {
     identity=$(/usr/bin/security find-identity -v -p codesigning "$keychain" \
       | /usr/bin/awk -v name="${privacyMirrorSigningIdentity}" 'index($0, name) {print $2; exit}')
 
+    if [ -z "$identity" ]; then
+      echo "Creating ${privacyMirrorSigningIdentity} for stable Privacy Mirror Screen Recording permission..." >&2
+      HOME="${config.home.homeDirectory}" ${privacyMirror}/bin/privacy-mirror-setup-signing >&2
+      identity=$(/usr/bin/security find-identity -v -p codesigning "$keychain" \
+        | /usr/bin/awk -v name="${privacyMirrorSigningIdentity}" 'index($0, name) {print $2; exit}')
+    fi
+
     if [ -n "$identity" ]; then
       /usr/bin/codesign --force --deep --keychain "$keychain" --sign "$identity" "$tmp_app"
     else
-      echo "warning: ${privacyMirrorSigningIdentity} not found; run privacy-mirror-setup-signing once for stable Screen Recording permission" >&2
-      /usr/bin/codesign --force --deep --sign - "$tmp_app"
+      echo "error: ${privacyMirrorSigningIdentity} not found; Privacy Mirror would need Screen Recording permission again after rebuild" >&2
+      exit 1
     fi
 
     rm -rf "$target_app"

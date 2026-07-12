@@ -1,5 +1,6 @@
 {
   "excludedWorkspaces": ["4"],
   "placeholderStyle": "blur",
-  "showsCursor": false
+  "showsCursor": false,
+  "captureFrameRate": 15
 }

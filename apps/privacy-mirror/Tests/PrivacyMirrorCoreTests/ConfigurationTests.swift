@@ -4,21 +4,29 @@ import XCTest
 
 final class ConfigurationTests: XCTestCase {
     func testDecodesConfiguration() throws {
-        let data = Data(#"{"excludedWorkspaces":["4","8"],"placeholderStyle":"solid","showsCursor":true}"#.utf8)
+        let data = Data(#"{"excludedWorkspaces":["4","8"],"placeholderStyle":"solid","showsCursor":true,"captureFrameRate":24}"#.utf8)
 
         let configuration = try AppConfiguration.decode(data)
 
         XCTAssertEqual(configuration.excludedWorkspaces, ["4", "8"])
         XCTAssertEqual(configuration.placeholderStyle, .solid)
         XCTAssertTrue(configuration.showsCursor)
+        XCTAssertEqual(configuration.captureFrameRate, 24)
     }
 
-    func testDefaultsCursorCaptureOff() throws {
+    func testDefaultsCursorCaptureOffAndLimitsFrameRate() throws {
         let data = Data(#"{"excludedWorkspaces":["4"],"placeholderStyle":"blur"}"#.utf8)
 
         let configuration = try AppConfiguration.decode(data)
 
         XCTAssertFalse(configuration.showsCursor)
+        XCTAssertEqual(configuration.captureFrameRate, 15)
+    }
+
+    func testRejectsInvalidCaptureFrameRate() {
+        let data = Data(#"{"excludedWorkspaces":["4"],"placeholderStyle":"blur","captureFrameRate":0}"#.utf8)
+
+        XCTAssertThrowsError(try AppConfiguration.decode(data))
     }
 
     func testRejectsEmptyWorkspaceList() {

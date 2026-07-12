@@ -20,12 +20,14 @@ The app reads `~/.config/privacy-mirror/config.json` on launch. Press `Cmd+R` to
 {
   "excludedWorkspaces": ["4"],
   "placeholderStyle": "blur",
-  "showsCursor": false
+  "showsCursor": false,
+  "captureFrameRate": 15
 }
 ```
 
 `placeholderStyle` accepts `blur` or `solid`.
 `showsCursor` defaults to `false`; enable it only if the conferencing app does not draw its own cursor.
+`captureFrameRate` defaults to `15` and accepts `1...60`; increase it only when the shared output needs smoother motion.
 
 Privacy Mirror uses a fail-closed allow-list: new windows stay absent from the mirror until classified.
 If an application has a window on an excluded workspace, every window from that application is omitted
@@ -46,7 +48,7 @@ physical-display capture.
 
 ## First launch
 
-Run `privacy-mirror-setup-signing` once, then rebuild. Home Manager installs the signed app copy at
+Home Manager creates a local code-signing identity when needed and installs the signed app copy at
 `~/Applications/Privacy Mirror.app`.
 
 Allow Privacy Mirror in **System Settings → Privacy & Security → Screen & System Audio Recording**, then

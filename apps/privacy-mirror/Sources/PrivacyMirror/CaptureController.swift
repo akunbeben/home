@@ -173,7 +173,8 @@ final class CaptureController: NSObject {
             filter: SCContentFilter(display: display, including: includedWindows),
             privateRegions: privateWindows.map(\.frame),
             placeholderStyle: configuration.placeholderStyle,
-            showsCursor: configuration.showsCursor
+            showsCursor: configuration.showsCursor,
+            captureFrameRate: configuration.captureFrameRate
         )
     }
 
@@ -181,7 +182,7 @@ final class CaptureController: NSObject {
         let configuration = SCStreamConfiguration()
         configuration.width = Int(CGDisplayPixelsWide(snapshot.display.displayID))
         configuration.height = Int(CGDisplayPixelsHigh(snapshot.display.displayID))
-        configuration.minimumFrameInterval = CMTime(value: 1, timescale: 30)
+        configuration.minimumFrameInterval = CMTime(value: 1, timescale: CMTimeScale(snapshot.captureFrameRate))
         configuration.queueDepth = 3
         configuration.showsCursor = snapshot.showsCursor
         configuration.capturesAudio = false
@@ -283,6 +284,7 @@ private struct CaptureSnapshot {
     let privateRegions: [CGRect]
     let placeholderStyle: PlaceholderStyle
     let showsCursor: Bool
+    let captureFrameRate: Int
 }
 
 private enum CaptureError: LocalizedError {
