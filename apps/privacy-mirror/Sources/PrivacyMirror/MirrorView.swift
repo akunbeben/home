@@ -7,6 +7,7 @@ final class MirrorView: NSView {
     private let displayLayer = AVSampleBufferDisplayLayer()
     private let statusLabel = NSTextField(labelWithString: "Starting Privacy Mirror…")
     private var placeholderViews: [NSView] = []
+    private var isLocallyHidden = false
 
     override var isFlipped: Bool { true }
 
@@ -35,6 +36,7 @@ final class MirrorView: NSView {
     }
 
     func enqueue(_ sampleBuffer: CMSampleBuffer) {
+        guard !isLocallyHidden else { return }
         statusLabel.isHidden = true
         if displayLayer.status == .failed {
             displayLayer.flush()
@@ -53,7 +55,17 @@ final class MirrorView: NSView {
         removePlaceholders()
         displayLayer.flushAndRemoveImage()
         statusLabel.stringValue = "Reclassifying windows…"
-        statusLabel.isHidden = false
+        statusLabel.isHidden = isLocallyHidden
+    }
+
+    func setLocallyHidden(_ hidden: Bool) {
+        isLocallyHidden = hidden
+        displayLayer.isHidden = hidden
+        if hidden {
+            removePlaceholders()
+            displayLayer.flushAndRemoveImage()
+            statusLabel.isHidden = true
+        }
     }
 
     func updatePlaceholders(
@@ -61,6 +73,7 @@ final class MirrorView: NSView {
         displayFrame: CGRect,
         style: PlaceholderStyle
     ) {
+        guard !isLocallyHidden else { return }
         removePlaceholders()
 
         for frame in PlaceholderLayout.frames(

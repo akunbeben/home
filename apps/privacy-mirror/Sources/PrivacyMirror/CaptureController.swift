@@ -40,6 +40,11 @@ final class CaptureController: NSObject {
         transition(shouldRefresh: true)
     }
 
+    func applyCurrentConfiguration() {
+        guard startSubscriptionIfNeeded() else { return }
+        transition(shouldRefresh: true)
+    }
+
     func invalidate(reason: String) {
         transition(shouldRefresh: false)
         mirrorView.showError(reason)

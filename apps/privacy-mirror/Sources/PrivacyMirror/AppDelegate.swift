@@ -159,13 +159,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     @objc private func showOutputWindow() {
         guard let outputWindow, let screen = NSScreen.main else { return }
+        mirrorView?.setLocallyHidden(false)
         outputWindow.level = .normal
         outputWindow.setFrame(screen.frame, display: true)
         outputWindow.orderFrontRegardless()
+        captureController?.applyCurrentConfiguration()
     }
 
     @objc private func parkOutputWindow() {
         guard let outputWindow, let screen = NSScreen.main else { return }
+        mirrorView?.setLocallyHidden(true)
         outputWindow.level = NSWindow.Level(
             rawValue: Int(CGWindowLevelForKey(.desktopIconWindow)) - 1
         )
