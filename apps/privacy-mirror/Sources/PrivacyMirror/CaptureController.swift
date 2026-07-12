@@ -132,9 +132,13 @@ final class CaptureController: NSObject {
 
         // Freeze the shareable catalog first. Windows created after this point are absent from the
         // allow-list until the next AeroSpace event, so they fail closed.
-        let content = try await SCShareableContent.excludingDesktopWindows(
+        let allContent = try await SCShareableContent.excludingDesktopWindows(
             false,
             onScreenWindowsOnly: false
+        )
+        let visibleContent = try await SCShareableContent.excludingDesktopWindows(
+            false,
+            onScreenWindowsOnly: true
         )
         try Task.checkCancellation()
 
@@ -145,21 +149,21 @@ final class CaptureController: NSObject {
         }.value
         try Task.checkCancellation()
 
-        guard let display = content.displays.first(where: { $0.displayID == CGMainDisplayID() }) else {
+        guard let display = visibleContent.displays.first(where: { $0.displayID == CGMainDisplayID() }) else {
             throw CaptureError.mainDisplayNotFound
         }
 
         let ownBundleID = Bundle.main.bundleIdentifier
-        let managedPrivateWindows = content.windows.filter { privateWindowIDs.contains($0.windowID) }
+        let managedPrivateWindows = allContent.windows.filter { privateWindowIDs.contains($0.windowID) }
         let privateProcessIDs = Set(
             managedPrivateWindows.compactMap { $0.owningApplication?.processID }
         )
-        let privateWindows = content.windows.filter { window in
+        let privateWindows = visibleContent.windows.filter { window in
             privateWindowIDs.contains(window.windowID)
                 || window.owningApplication.map { privateProcessIDs.contains($0.processID) } == true
         }
         let expandedPrivateWindowIDs = Set(privateWindows.map(\.windowID))
-        let includedWindows = content.windows.filter { window in
+        let includedWindows = visibleContent.windows.filter { window in
             !expandedPrivateWindowIDs.contains(window.windowID)
                 && window.owningApplication?.bundleIdentifier != ownBundleID
         }

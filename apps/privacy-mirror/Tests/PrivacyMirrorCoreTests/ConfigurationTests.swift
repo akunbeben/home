@@ -49,4 +49,24 @@ final class ConfigurationTests: XCTestCase {
         gate.invalidate()
         XCTAssertFalse(gate.isOpen)
     }
+
+    func testPlaceholderFramesFlipScreenCaptureCoordinates() {
+        let frames = PlaceholderLayout.frames(
+            for: [CGRect(x: 100, y: 100, width: 300, height: 200)],
+            displayFrame: CGRect(x: 0, y: 0, width: 1000, height: 800),
+            viewBounds: CGRect(x: 0, y: 0, width: 1000, height: 800)
+        )
+
+        XCTAssertEqual(frames, [CGRect(x: 100, y: 500, width: 300, height: 200)])
+    }
+
+    func testPlaceholderFramesRespectAspectFitOffset() {
+        let frames = PlaceholderLayout.frames(
+            for: [CGRect(x: 0, y: 0, width: 1000, height: 800)],
+            displayFrame: CGRect(x: 0, y: 0, width: 1000, height: 800),
+            viewBounds: CGRect(x: 0, y: 0, width: 1200, height: 800)
+        )
+
+        XCTAssertEqual(frames, [CGRect(x: 100, y: 0, width: 1000, height: 800)])
+    }
 }

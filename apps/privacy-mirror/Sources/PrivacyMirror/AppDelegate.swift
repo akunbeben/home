@@ -3,34 +3,30 @@ import PrivacyMirrorCore
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
-    private var controlWindow: NSWindow?
     private var outputWindow: NSWindow?
     private var mirrorView: MirrorView?
-    private let statusLabel = NSTextField(wrappingLabelWithString: "Starting Privacy Mirror…")
+    private var statusItem: NSStatusItem?
+    private var statusMenuItem: NSMenuItem?
+    private var privateWorkspacesMenuItem: NSMenuItem?
     private var captureController: CaptureController?
     private var controlServer: ControlServer?
     private lazy var configurationURL = resolveConfigurationURL()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.setActivationPolicy(.accessory)
         installMainMenu()
+        installStatusItem()
         createWindows()
         reloadConfiguration()
-        NSApp.activate(ignoringOtherApps: true)
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        true
+        false
     }
 
     func applicationWillTerminate(_ notification: Notification) {
         controlServer?.stop()
         captureController?.stop()
-    }
-
-    func windowWillClose(_ notification: Notification) {
-        if notification.object as? NSWindow === controlWindow {
-            NSApp.terminate(nil)
-        }
     }
 
     @objc private func reloadConfiguration() {
@@ -44,20 +40,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                     mirrorView: mirrorView,
                     aeroSpace: try AeroSpaceClient(),
                     configuration: configuration,
-                    onStatus: { [weak self] status in self?.statusLabel.stringValue = status }
+                    onStatus: { [weak self] status in self?.updateStatus(status) }
                 )
                 captureController = controller
                 startControlServer(controller: controller)
                 controller.start()
             }
-            controlWindow?.title = "Privacy Mirror — private: \(configuration.excludedWorkspaces.joined(separator: ", "))"
+            privateWorkspacesMenuItem?.title = "Private workspaces: \(configuration.excludedWorkspaces.joined(separator: ", "))"
         } catch {
             let message = "Configuration error: \(error.localizedDescription)"
             if let captureController {
                 captureController.invalidate(reason: message)
             } else {
                 mirrorView.showError(message)
-                statusLabel.stringValue = message
+                updateStatus(message)
             }
         }
     }
@@ -86,42 +82,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let mirrorView = MirrorView(frame: NSRect(origin: .zero, size: screenFrame.size))
         let outputWindow = NSWindow(
             contentRect: screenFrame,
-            styleMask: [.borderless],
+            styleMask: [.titled, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
         outputWindow.contentView = mirrorView
         outputWindow.title = "Privacy Mirror Output"
+        outputWindow.titleVisibility = .hidden
+        outputWindow.titlebarAppearsTransparent = true
         outputWindow.isOpaque = true
         outputWindow.backgroundColor = .black
         outputWindow.ignoresMouseEvents = true
         outputWindow.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
-        outputWindow.level = NSWindow.Level(
-            rawValue: Int(CGWindowLevelForKey(.desktopIconWindow)) - 1
-        )
-        outputWindow.setAccessibilityElement(false)
+        outputWindow.level = .normal
         outputWindow.orderBack(nil)
-
-        let controlContent = NSView(frame: NSRect(x: 0, y: 0, width: 460, height: 150))
-        statusLabel.frame = NSRect(x: 24, y: 42, width: 412, height: 72)
-        statusLabel.alignment = .center
-        statusLabel.font = .systemFont(ofSize: 15)
-        controlContent.addSubview(statusLabel)
-
-        let controlWindow = NSWindow(
-            contentRect: controlContent.frame,
-            styleMask: [.titled, .closable, .miniaturizable, .resizable],
-            backing: .buffered,
-            defer: false
-        )
-        controlWindow.contentView = controlContent
-        controlWindow.delegate = self
-        controlWindow.center()
-        controlWindow.makeKeyAndOrderFront(nil)
 
         self.mirrorView = mirrorView
         self.outputWindow = outputWindow
-        self.controlWindow = controlWindow
     }
 
     private func installMainMenu() {
@@ -142,6 +119,45 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         appMenuItem.submenu = appMenu
         mainMenu.addItem(appMenuItem)
         NSApp.mainMenu = mainMenu
+    }
+
+    private func installStatusItem() {
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        item.button?.title = "PM"
+
+        let menu = NSMenu()
+        let status = NSMenuItem(title: "Starting Privacy Mirror…", action: nil, keyEquivalent: "")
+        status.isEnabled = false
+        menu.addItem(status)
+
+        let privateWorkspaces = NSMenuItem(title: "Private workspaces: loading…", action: nil, keyEquivalent: "")
+        privateWorkspaces.isEnabled = false
+        menu.addItem(privateWorkspaces)
+        menu.addItem(.separator())
+
+        let reload = NSMenuItem(title: "Reload Configuration", action: #selector(reloadConfiguration), keyEquivalent: "r")
+        reload.target = self
+        menu.addItem(reload)
+
+        let showOutput = NSMenuItem(title: "Show Output Window", action: #selector(showOutputWindow), keyEquivalent: "")
+        showOutput.target = self
+        menu.addItem(showOutput)
+        menu.addItem(.separator())
+
+        menu.addItem(withTitle: "Quit Privacy Mirror", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+
+        item.menu = menu
+        statusItem = item
+        statusMenuItem = status
+        privateWorkspacesMenuItem = privateWorkspaces
+    }
+
+    @objc private func showOutputWindow() {
+        outputWindow?.orderFrontRegardless()
+    }
+
+    private func updateStatus(_ status: String) {
+        statusMenuItem?.title = status
     }
 
     private func resolveConfigurationURL() -> URL {

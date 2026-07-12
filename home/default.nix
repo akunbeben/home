@@ -1,6 +1,8 @@
-{ config, ... }:
+{ config, lib, pkgs, ... }:
 let
   kittyBin = "/Applications/kitty.app/Contents/MacOS/kitty";
+  privacyMirror = pkgs.callPackage ../pkgs/privacy-mirror.nix {};
+  privacyMirrorSigningIdentity = "Privacy Mirror Local Code Signing";
   syncScript = ''
     MODE=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
     [ "$MODE" = "Dark" ] \
@@ -66,6 +68,33 @@ in {
       }) [ 1 2 3 4 5 ];
     };
   };
+
+  home.activation.installPrivacyMirrorApp = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    set -euo pipefail
+
+    source_app="${privacyMirror}/share/privacy-mirror/Privacy Mirror.app"
+    target_app="${config.home.homeDirectory}/Applications/Privacy Mirror.app"
+    tmp_app="$target_app.tmp"
+    keychain="${config.home.homeDirectory}/Library/Keychains/login.keychain-db"
+
+    rm -rf "$tmp_app"
+    mkdir -p "$(/usr/bin/dirname "$target_app")"
+    cp -R "$source_app" "$tmp_app"
+    chmod -R u+w "$tmp_app"
+
+    identity=$(/usr/bin/security find-identity -v -p codesigning "$keychain" \
+      | /usr/bin/awk -v name="${privacyMirrorSigningIdentity}" 'index($0, name) {print $2; exit}')
+
+    if [ -n "$identity" ]; then
+      /usr/bin/codesign --force --deep --keychain "$keychain" --sign "$identity" "$tmp_app"
+    else
+      echo "warning: ${privacyMirrorSigningIdentity} not found; run privacy-mirror-setup-signing once for stable Screen Recording permission" >&2
+      /usr/bin/codesign --force --deep --sign - "$tmp_app"
+    fi
+
+    rm -rf "$target_app"
+    mv "$tmp_app" "$target_app"
+  '';
 
   home.file = {
     ".config/tmux/tmux.conf".source = config.lib.file.mkOutOfStoreSymlink

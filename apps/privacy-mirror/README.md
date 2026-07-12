@@ -1,12 +1,12 @@
 # Privacy Mirror
 
-Privacy Mirror creates a background output window that mirrors the main display while omitting applications
+Privacy Mirror runs as a menu bar app and creates an output window that mirrors the main display while omitting applications
 with windows on configured AeroSpace workspaces. Share the **Privacy Mirror Output** window in Zoom, Meet,
 or another conferencing app instead of sharing the physical display directly.
 
-The output window stays on the main display behind normal windows and is deliberately invisible to
-AeroSpace's accessibility tree, so switching workspaces does not interrupt the shared output. The separate
-control window may move with its AeroSpace workspace without affecting the share.
+The output window stays on the main display behind normal windows. AeroSpace is configured to float
+Privacy Mirror windows so the shareable output does not take over the tiling layout. The separate control
+window may move with its AeroSpace workspace without affecting the share.
 
 ## Configuration
 
@@ -40,12 +40,12 @@ physical-display capture.
 
 ## First launch
 
-Allow Privacy Mirror in **System Settings → Privacy & Security → Screen & System Audio Recording**, then
-relaunch it. Home Manager installs the app under `~/Applications/Home Manager Apps`.
+Run `privacy-mirror-setup-signing` once, then rebuild. Home Manager installs the signed app copy at
+`~/Applications/Privacy Mirror.app`.
 
-The Nix package is ad-hoc signed. Changing and rebuilding the application changes its code identity, so
-macOS may require Screen Recording permission again after an application update. JSON-only configuration
-changes do not rebuild the app or affect the permission.
+Allow Privacy Mirror in **System Settings → Privacy & Security → Screen & System Audio Recording**, then
+relaunch it. The local signing identity keeps Privacy Mirror's code identity stable across rebuilds, so
+macOS should not ask for Screen Recording permission again unless the signing identity is deleted or reset.
 
 ## Development
 

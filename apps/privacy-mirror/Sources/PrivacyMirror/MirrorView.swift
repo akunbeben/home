@@ -43,12 +43,14 @@ final class MirrorView: NSView {
     }
 
     func showError(_ message: String) {
+        removePlaceholders()
         displayLayer.flushAndRemoveImage()
         statusLabel.stringValue = message
         statusLabel.isHidden = false
     }
 
     func blank() {
+        removePlaceholders()
         displayLayer.flushAndRemoveImage()
         statusLabel.stringValue = "Reclassifying windows…"
         statusLabel.isHidden = false
@@ -59,31 +61,13 @@ final class MirrorView: NSView {
         displayFrame: CGRect,
         style: PlaceholderStyle
     ) {
-        placeholderViews.forEach { $0.removeFromSuperview() }
-        placeholderViews.removeAll()
+        removePlaceholders()
 
-        guard displayFrame.width > 0, displayFrame.height > 0 else { return }
-
-        let scale = min(bounds.width / displayFrame.width, bounds.height / displayFrame.height)
-        let renderedSize = CGSize(
-            width: displayFrame.width * scale,
-            height: displayFrame.height * scale
-        )
-        let offset = CGPoint(
-            x: (bounds.width - renderedSize.width) / 2,
-            y: (bounds.height - renderedSize.height) / 2
-        )
-
-        for region in regions {
-            let clipped = region.intersection(displayFrame)
-            guard !clipped.isNull, clipped.width > 1, clipped.height > 1 else { continue }
-
-            let frame = CGRect(
-                x: offset.x + (clipped.minX - displayFrame.minX) * scale,
-                y: offset.y + (clipped.minY - displayFrame.minY) * scale,
-                width: clipped.width * scale,
-                height: clipped.height * scale
-            )
+        for frame in PlaceholderLayout.frames(
+            for: regions,
+            displayFrame: displayFrame,
+            viewBounds: bounds
+        ) {
             let placeholder = makePlaceholder(style: style, frame: frame)
             addSubview(placeholder)
             placeholderViews.append(placeholder)
@@ -108,5 +92,10 @@ final class MirrorView: NSView {
             view.layer?.cornerRadius = 8
             return view
         }
+    }
+
+    private func removePlaceholders() {
+        placeholderViews.forEach { $0.removeFromSuperview() }
+        placeholderViews.removeAll()
     }
 }
