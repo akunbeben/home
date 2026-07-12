@@ -9,6 +9,7 @@ complete -c eops -n '__fish_seen_subcommand_from ai' -l raw -d 'bypass smart ref
 complete -c eops -n '__fish_seen_subcommand_from ai' -l smart -d 'paksa smart refine'
 complete -c eops -n '__fish_use_subcommand' -a refine -d 'refine keseluruhan todo hari ini'
 complete -c eops -n '__fish_use_subcommand' -a ctx -d 'lihat context ringkas'
+complete -c eops -n '__fish_use_subcommand' -a tmux -d 'refresh tmux runtime context'
 complete -c eops -n '__fish_use_subcommand' -a bootstrap -d 'tampilkan bootstrap prompt model'
 complete -c eops -n '__fish_use_subcommand' -a status -d 'cek status harian'
 complete -c eops -n '__fish_use_subcommand' -a path -d 'lihat path root everyday-ops'

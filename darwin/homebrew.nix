@@ -3,8 +3,6 @@
     enable = true;
     onActivation = {
       autoUpdate = true;
-      cleanup = "uninstall";
-      extraFlags = [ "--force-cleanup" ];
       upgrade = true;
     };
 
@@ -65,7 +63,6 @@
         --user=${lib.escapeShellArg config.homebrew.user} \
         --set-home \
         env \
-        HOMEBREW_NO_INSTALL_FROM_API=1 \
         brew tap --force homebrew/cask
       PATH="${config.homebrew.prefix}/bin:${lib.makeBinPath [ pkgs.mas ]}:$PATH" \
       sudo \
@@ -73,7 +70,13 @@
         --user=${lib.escapeShellArg config.homebrew.user} \
         --set-home \
         env \
-        HOMEBREW_NO_INSTALL_FROM_API=1 \
+        brew trust --tap nikitabobko/tap vicentereig/tap
+      PATH="${config.homebrew.prefix}/bin:${lib.makeBinPath [ pkgs.mas ]}:$PATH" \
+      sudo \
+        --preserve-env=PATH \
+        --user=${lib.escapeShellArg config.homebrew.user} \
+        --set-home \
+        env \
         ${config.homebrew.onActivation.brewBundleCmd}
     else
       echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2

@@ -39,8 +39,30 @@ pkgs.writeShellScriptBin "boc" ''
   cmd_work() {
     local session="boc"
     local eops_dir="$HOME/Projects/everyday-ops"
+    local -a work_repos=("''${BOC_REPOS[@]}" "$HOME/Work/better-boc-provision" "$HOME/Work/nodegraf" "$HOME/Work/keloola-ai")
+
+    _refresh_tmux_context() {
+      if [ -x "$eops_dir/scripts/refresh-tmux-context.sh" ]; then
+        "$eops_dir/scripts/refresh-tmux-context.sh" >/dev/null 2>&1 || true
+      fi
+    }
+
+    _ensure_repo_windows() {
+      local repo name
+
+      for repo in "''${work_repos[@]}"; do
+        name=$(basename "$repo")
+        if tmux list-windows -t "$session" -F '#{window_name}' 2>/dev/null | grep -Fxq "$name"; then
+          continue
+        fi
+
+        tmux new-window -d -t "$session:" -c "$repo" -n "$name" "nvim ."
+      done
+    }
 
     if tmux has-session -t "$session" 2>/dev/null; then
+      _ensure_repo_windows
+      _refresh_tmux_context
       _tmux_go "$session"
       return
     fi
@@ -51,7 +73,7 @@ pkgs.writeShellScriptBin "boc" ''
       "fish -C 'cd \"$eops_dir\"; claude'"
     prev_name="eops"
 
-    for repo in "''${BOC_REPOS[@]}"; do
+    for repo in "''${work_repos[@]}"; do
       name=$(basename "$repo")
       tmux new-window -a -t "$session:$prev_name" -c "$repo" -n "$name"
       tmux send-keys -t "$session:$name" "nvim ." Enter
@@ -59,6 +81,7 @@ pkgs.writeShellScriptBin "boc" ''
     done
 
     tmux select-window -t "$session:eops"
+    _refresh_tmux_context
     _tmux_go "$session"
   }
 
