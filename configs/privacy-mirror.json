@@ -2,5 +2,11 @@
   "excludedWorkspaces": ["4"],
   "placeholderStyle": "blur",
   "showsCursor": false,
-  "captureFrameRate": 15
+  "captureFrameRate": 10,
+  "captureMaxWidth": 1920,
+  "shortcuts": {
+    "reloadConfiguration": "option+shift+r",
+    "showOutput": "option+shift+s",
+    "parkOutput": "option+shift+p"
+  }
 }

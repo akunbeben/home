@@ -10,6 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var privateWorkspacesMenuItem: NSMenuItem?
     private var captureController: CaptureController?
     private var controlServer: ControlServer?
+    private let hotKeyController = HotKeyController()
     private lazy var configurationURL = resolveConfigurationURL()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -18,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         installStatusItem()
         createWindows()
         reloadConfiguration()
+        showOutputWindow()
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -47,7 +49,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 controller.start()
             }
             privateWorkspacesMenuItem?.title = "Private workspaces: \(configuration.excludedWorkspaces.joined(separator: ", "))"
-            parkOutputWindow()
+            try hotKeyController.register(
+                shortcuts: configuration.shortcuts,
+                actions: [
+                    HotKeyController.Action.reloadConfiguration: { [weak self] in self?.reloadConfiguration() },
+                    HotKeyController.Action.showOutput: { [weak self] in self?.showOutputWindow() },
+                    HotKeyController.Action.parkOutput: { [weak self] in self?.parkOutputWindow() },
+                ]
+            )
         } catch {
             let message = "Configuration error: \(error.localizedDescription)"
             if let captureController {
@@ -98,7 +107,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         self.mirrorView = mirrorView
         self.outputWindow = outputWindow
-        parkOutputWindow()
     }
 
     private func installMainMenu() {

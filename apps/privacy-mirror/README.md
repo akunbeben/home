@@ -8,26 +8,37 @@ The output window stays on the main display behind normal windows. AeroSpace is 
 Privacy Mirror windows so the shareable output does not take over the tiling layout. The separate control
 window may move with its AeroSpace workspace without affecting the share.
 
-The local output window is parked below the desktop layer by default, so it keeps rendering for the shared
-window without echoing through transparent windows on the desktop. Use the `PM` menu bar item to show or
-park it again.
+On launch, Privacy Mirror shows the output window so it is easy to pick in the conferencing app's window
+share dialog. After sharing **Privacy Mirror Output**, park it from the `PM` menu bar item or the keyboard
+shortcut. Parking moves the local output below the desktop layer so it keeps rendering for the share
+without echoing through transparent windows on the desktop.
 
 ## Configuration
 
-The app reads `~/.config/privacy-mirror/config.json` on launch. Press `Cmd+R` to reload it.
+The app reads `~/.config/privacy-mirror/config.json` on launch. Use the configured shortcut or the `PM`
+menu to reload it.
 
 ```json
 {
   "excludedWorkspaces": ["4"],
   "placeholderStyle": "blur",
   "showsCursor": false,
-  "captureFrameRate": 15
+  "captureFrameRate": 10,
+  "captureMaxWidth": 1920,
+  "shortcuts": {
+    "reloadConfiguration": "option+shift+r",
+    "showOutput": "option+shift+s",
+    "parkOutput": "option+shift+p"
+  }
 }
 ```
 
 `placeholderStyle` accepts `blur` or `solid`.
 `showsCursor` defaults to `false`; enable it only if the conferencing app does not draw its own cursor.
-`captureFrameRate` defaults to `15` and accepts `1...60`; increase it only when the shared output needs smoother motion.
+`captureFrameRate` defaults to `10` and accepts `1...60`; increase it only when the shared output needs smoother motion.
+`captureMaxWidth` defaults to `1920` and caps the ScreenCaptureKit stream width to reduce long-running
+CPU/GPU load.
+Shortcut strings support combinations such as `option+shift+p`, `cmd+shift+s`, and `ctrl+option+r`.
 
 Privacy Mirror uses a fail-closed allow-list: new windows stay absent from the mirror until classified.
 If an application has a window on an excluded workspace, every window from that application is omitted
@@ -38,7 +49,7 @@ AeroSpace workspace changes, new windows, and the configured `Alt+Shift+number` 
 output before reclassification. The move bindings use `privacy-mirror-move`, which waits for an
 acknowledgment that the current stream is closed before asking AeroSpace to move the window. If
 classification, the control socket, or the event subscription fails, the output remains
-blank until `Cmd+R` succeeds. Moving a window with a direct external AeroSpace command that neither uses
+blank until reload succeeds. Moving a window with a direct external AeroSpace command that neither uses
 those bindings nor changes the focused workspace cannot be observed before AeroSpace changes state; avoid
 that workflow during a share.
 

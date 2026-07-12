@@ -4,7 +4,7 @@ import XCTest
 
 final class ConfigurationTests: XCTestCase {
     func testDecodesConfiguration() throws {
-        let data = Data(#"{"excludedWorkspaces":["4","8"],"placeholderStyle":"solid","showsCursor":true,"captureFrameRate":24}"#.utf8)
+        let data = Data(#"{"excludedWorkspaces":["4","8"],"placeholderStyle":"solid","showsCursor":true,"captureFrameRate":24,"captureMaxWidth":2560,"shortcuts":{"reloadConfiguration":"option+shift+r","showOutput":"option+shift+s","parkOutput":"option+shift+p"}}"#.utf8)
 
         let configuration = try AppConfiguration.decode(data)
 
@@ -12,19 +12,31 @@ final class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.placeholderStyle, .solid)
         XCTAssertTrue(configuration.showsCursor)
         XCTAssertEqual(configuration.captureFrameRate, 24)
+        XCTAssertEqual(configuration.captureMaxWidth, 2560)
+        XCTAssertEqual(configuration.shortcuts.showOutput, "option+shift+s")
     }
 
-    func testDefaultsCursorCaptureOffAndLimitsFrameRate() throws {
+    func testDefaultsCursorCaptureOffAndLimitsCaptureCost() throws {
         let data = Data(#"{"excludedWorkspaces":["4"],"placeholderStyle":"blur"}"#.utf8)
 
         let configuration = try AppConfiguration.decode(data)
 
         XCTAssertFalse(configuration.showsCursor)
-        XCTAssertEqual(configuration.captureFrameRate, 15)
+        XCTAssertEqual(configuration.captureFrameRate, 10)
+        XCTAssertEqual(configuration.captureMaxWidth, 1920)
+        XCTAssertEqual(configuration.shortcuts.reloadConfiguration, "option+shift+r")
+        XCTAssertEqual(configuration.shortcuts.showOutput, "option+shift+s")
+        XCTAssertEqual(configuration.shortcuts.parkOutput, "option+shift+p")
     }
 
     func testRejectsInvalidCaptureFrameRate() {
         let data = Data(#"{"excludedWorkspaces":["4"],"placeholderStyle":"blur","captureFrameRate":0}"#.utf8)
+
+        XCTAssertThrowsError(try AppConfiguration.decode(data))
+    }
+
+    func testRejectsInvalidCaptureMaxWidth() {
+        let data = Data(#"{"excludedWorkspaces":["4"],"placeholderStyle":"blur","captureMaxWidth":320}"#.utf8)
 
         XCTAssertThrowsError(try AppConfiguration.decode(data))
     }
