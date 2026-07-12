@@ -3,6 +3,7 @@ import PrivacyMirrorCore
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
+    private let parkedOutputVisibleWidth: CGFloat = 10
     private var outputWindow: NSWindow?
     private var mirrorView: MirrorView?
     private var statusItem: NSStatusItem?
@@ -99,6 +100,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         self.mirrorView = mirrorView
         self.outputWindow = outputWindow
+        parkOutputWindow()
     }
 
     private func installMainMenu() {
@@ -142,6 +144,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let showOutput = NSMenuItem(title: "Show Output Window", action: #selector(showOutputWindow), keyEquivalent: "")
         showOutput.target = self
         menu.addItem(showOutput)
+
+        let parkOutput = NSMenuItem(title: "Park Output Window", action: #selector(parkOutputWindow), keyEquivalent: "")
+        parkOutput.target = self
+        menu.addItem(parkOutput)
         menu.addItem(.separator())
 
         menu.addItem(withTitle: "Quit Privacy Mirror", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
@@ -153,7 +159,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     @objc private func showOutputWindow() {
-        outputWindow?.orderFrontRegardless()
+        guard let outputWindow, let screen = NSScreen.main else { return }
+        outputWindow.setFrame(screen.frame, display: true)
+        outputWindow.orderFrontRegardless()
+    }
+
+    @objc private func parkOutputWindow() {
+        guard let outputWindow, let screen = NSScreen.main else { return }
+        var frame = screen.frame
+        frame.origin.x = screen.frame.maxX - parkedOutputVisibleWidth
+        outputWindow.setFrame(frame, display: true)
+        outputWindow.orderBack(nil)
     }
 
     private func updateStatus(_ status: String) {
