@@ -28,7 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         controlServer?.stop()
-        captureController?.stop()
+        captureController?.shutdown()
     }
 
     @objc private func reloadConfiguration() {
@@ -46,9 +46,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 )
                 captureController = controller
                 startControlServer(controller: controller)
-                controller.start()
             }
             privateWorkspacesMenuItem?.title = "Private workspaces: \(configuration.excludedWorkspaces.joined(separator: ", "))"
+            updateStatus("Ready — share Output, then park to start mirroring")
             try hotKeyController.register(
                 shortcuts: configuration.shortcuts,
                 actions: [
@@ -166,6 +166,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     @objc private func showOutputWindow() {
         guard let outputWindow, let screen = NSScreen.main else { return }
+        captureController?.stop()
+        mirrorView?.showReady("Ready — share this Output window, then park it")
+        updateStatus("Ready — share Output, then park to start mirroring")
         outputWindow.level = .normal
         outputWindow.setFrame(screen.frame, display: true)
         outputWindow.orderFrontRegardless()
@@ -173,6 +176,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     @objc private func parkOutputWindow() {
         guard let outputWindow, let screen = NSScreen.main else { return }
+        captureController?.start()
         outputWindow.level = NSWindow.Level(
             rawValue: Int(CGWindowLevelForKey(.minimumWindow))
         )

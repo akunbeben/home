@@ -1,17 +1,18 @@
 # Privacy Mirror
 
-Privacy Mirror runs as a menu bar app and creates an output window that mirrors the main display while omitting applications
-with windows on configured AeroSpace workspaces. Share the **Privacy Mirror Output** window in Zoom, Meet,
-or another conferencing app instead of sharing the physical display directly.
+Privacy Mirror runs as a menu bar app and creates an output window that can mirror the main display while
+omitting applications with windows on configured AeroSpace workspaces. Share the **Privacy Mirror Output**
+window in Zoom, Meet, or another conferencing app instead of sharing the physical display directly.
 
 The output window stays on the main display behind normal windows. AeroSpace is configured to float
 Privacy Mirror windows so the shareable output does not take over the tiling layout. The separate control
 window may move with its AeroSpace workspace without affecting the share.
 
-On launch, Privacy Mirror shows the output window so it is easy to pick in the conferencing app's window
-share dialog. After sharing **Privacy Mirror Output**, park it from the `PM` menu bar item or the keyboard
-shortcut. Parking moves the local output below the desktop layer so it keeps rendering for the share
-without echoing through transparent windows on the desktop.
+On launch, Privacy Mirror shows the output window without starting ScreenCaptureKit, so normal desktop
+work stays unaffected while the app is standing by. After sharing **Privacy Mirror Output**, park it from
+the `PM` menu bar item or the keyboard shortcut. Parking starts mirroring and moves the local output below
+the desktop layer so it keeps rendering for the share without echoing through transparent windows on the
+desktop. Showing the output window again stops mirroring and returns the app to standby.
 
 ## Configuration
 

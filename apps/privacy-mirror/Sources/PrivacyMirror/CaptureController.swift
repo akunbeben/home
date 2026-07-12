@@ -16,6 +16,7 @@ final class CaptureController: NSObject {
     private var deferredRefresh: DispatchWorkItem?
     private var gate = CaptureGate()
     private var stopped = false
+    private var active = false
 
     init(
         mirrorView: MirrorView,
@@ -31,6 +32,7 @@ final class CaptureController: NSObject {
 
     func start() {
         stopped = false
+        active = true
         guard startSubscriptionIfNeeded() else { return }
         transition(shouldRefresh: true)
     }
@@ -38,7 +40,9 @@ final class CaptureController: NSObject {
     func apply(configuration: AppConfiguration) {
         self.configuration = configuration
         guard startSubscriptionIfNeeded() else { return }
-        transition(shouldRefresh: true)
+        if active {
+            transition(shouldRefresh: true)
+        }
     }
 
     func invalidate(reason: String) {
@@ -48,6 +52,10 @@ final class CaptureController: NSObject {
     }
 
     func prepareForWindowMove(completion: @escaping (Bool) -> Void) {
+        guard active else {
+            completion(true)
+            return
+        }
         guard let stopOperation = transition(shouldRefresh: false) else {
             completion(false)
             return
@@ -59,10 +67,8 @@ final class CaptureController: NSObject {
     }
 
     func stop() {
-        stopped = true
+        active = false
         gate.invalidate()
-        subscription?.stop()
-        subscription = nil
         deferredRefresh?.cancel()
         deferredRefresh = nil
         operation?.cancel()
@@ -71,6 +77,13 @@ final class CaptureController: NSObject {
         guard let stream else { return }
         self.stream = nil
         Task { try? await stream.stopCapture() }
+    }
+
+    func shutdown() {
+        stopped = true
+        stop()
+        subscription?.stop()
+        subscription = nil
     }
 
     @discardableResult

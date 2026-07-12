@@ -48,6 +48,13 @@ final class MirrorView: NSView {
         statusLabel.isHidden = false
     }
 
+    func showReady(_ message: String) {
+        removePlaceholders()
+        resetDisplayLayer()
+        statusLabel.stringValue = message
+        statusLabel.isHidden = false
+    }
+
     func blank() {
         removePlaceholders()
         resetDisplayLayer()
@@ -207,14 +214,6 @@ private final class PrivacyPlaceholderView: NSView {
         title.draw(centeredAtY: iconRect.maxY + 16, in: rect)
 
         guard rect.width >= 220, rect.height >= 120 else { return }
-        let subtitle = NSAttributedString(
-            string: "Hidden from screen share",
-            attributes: [
-                .foregroundColor: NSColor(calibratedWhite: 0.82, alpha: 0.76),
-                .font: NSFont.systemFont(ofSize: 13, weight: .medium),
-            ]
-        )
-        subtitle.draw(centeredAtY: iconRect.maxY + 44, in: rect)
     }
 
     private func drawSmallLabel(in rect: NSRect) {
