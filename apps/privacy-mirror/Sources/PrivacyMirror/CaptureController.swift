@@ -105,7 +105,7 @@ final class CaptureController: NSObject {
 
             let stream = SCStream(
                 filter: snapshot.filter,
-                configuration: makeStreamConfiguration(for: snapshot.display),
+                configuration: makeStreamConfiguration(for: snapshot),
                 delegate: self
             )
             try stream.addStreamOutput(self, type: .screen, sampleHandlerQueue: captureQueue)
@@ -172,17 +172,18 @@ final class CaptureController: NSObject {
             display: display,
             filter: SCContentFilter(display: display, including: includedWindows),
             privateRegions: privateWindows.map(\.frame),
-            placeholderStyle: configuration.placeholderStyle
+            placeholderStyle: configuration.placeholderStyle,
+            showsCursor: configuration.showsCursor
         )
     }
 
-    private func makeStreamConfiguration(for display: SCDisplay) -> SCStreamConfiguration {
+    private func makeStreamConfiguration(for snapshot: CaptureSnapshot) -> SCStreamConfiguration {
         let configuration = SCStreamConfiguration()
-        configuration.width = Int(CGDisplayPixelsWide(display.displayID))
-        configuration.height = Int(CGDisplayPixelsHigh(display.displayID))
+        configuration.width = Int(CGDisplayPixelsWide(snapshot.display.displayID))
+        configuration.height = Int(CGDisplayPixelsHigh(snapshot.display.displayID))
         configuration.minimumFrameInterval = CMTime(value: 1, timescale: 30)
         configuration.queueDepth = 3
-        configuration.showsCursor = true
+        configuration.showsCursor = snapshot.showsCursor
         configuration.capturesAudio = false
         return configuration
     }
@@ -281,6 +282,7 @@ private struct CaptureSnapshot {
     let filter: SCContentFilter
     let privateRegions: [CGRect]
     let placeholderStyle: PlaceholderStyle
+    let showsCursor: Bool
 }
 
 private enum CaptureError: LocalizedError {

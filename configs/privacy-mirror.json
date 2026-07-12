@@ -1,4 +1,5 @@
 {
   "excludedWorkspaces": ["4"],
-  "placeholderStyle": "blur"
+  "placeholderStyle": "blur",
+  "showsCursor": false
 }

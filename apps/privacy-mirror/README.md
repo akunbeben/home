@@ -19,11 +19,13 @@ The app reads `~/.config/privacy-mirror/config.json` on launch. Press `Cmd+R` to
 ```json
 {
   "excludedWorkspaces": ["4"],
-  "placeholderStyle": "blur"
+  "placeholderStyle": "blur",
+  "showsCursor": false
 }
 ```
 
 `placeholderStyle` accepts `blur` or `solid`.
+`showsCursor` defaults to `false`; enable it only if the conferencing app does not draw its own cursor.
 
 Privacy Mirror uses a fail-closed allow-list: new windows stay absent from the mirror until classified.
 If an application has a window on an excluded workspace, every window from that application is omitted
