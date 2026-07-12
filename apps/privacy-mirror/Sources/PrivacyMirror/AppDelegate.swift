@@ -47,6 +47,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 controller.start()
             }
             privateWorkspacesMenuItem?.title = "Private workspaces: \(configuration.excludedWorkspaces.joined(separator: ", "))"
+            parkOutputWindow()
         } catch {
             let message = "Configuration error: \(error.localizedDescription)"
             if let captureController {
@@ -93,7 +94,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         outputWindow.isOpaque = true
         outputWindow.backgroundColor = .black
         outputWindow.ignoresMouseEvents = true
-        outputWindow.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
+        outputWindow.collectionBehavior = [.ignoresCycle]
         outputWindow.level = .normal
         outputWindow.orderBack(nil)
 
@@ -159,18 +160,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     @objc private func showOutputWindow() {
         guard let outputWindow, let screen = NSScreen.main else { return }
-        mirrorView?.setLocallyHidden(false)
         outputWindow.level = .normal
         outputWindow.setFrame(screen.frame, display: true)
         outputWindow.orderFrontRegardless()
-        captureController?.applyCurrentConfiguration()
     }
 
     @objc private func parkOutputWindow() {
         guard let outputWindow, let screen = NSScreen.main else { return }
-        mirrorView?.setLocallyHidden(true)
         outputWindow.level = NSWindow.Level(
-            rawValue: Int(CGWindowLevelForKey(.desktopIconWindow)) - 1
+            rawValue: Int(CGWindowLevelForKey(.minimumWindow))
         )
         outputWindow.setFrame(screen.frame, display: true)
         outputWindow.orderBack(nil)
