@@ -83,14 +83,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let mirrorView = MirrorView(frame: NSRect(origin: .zero, size: screenFrame.size))
         let outputWindow = NSWindow(
             contentRect: screenFrame,
-            styleMask: [.titled, .fullSizeContentView],
+            styleMask: [.borderless],
             backing: .buffered,
             defer: false
         )
         outputWindow.contentView = mirrorView
         outputWindow.title = "Privacy Mirror Output"
-        outputWindow.titleVisibility = .hidden
-        outputWindow.titlebarAppearsTransparent = true
         outputWindow.isOpaque = true
         outputWindow.backgroundColor = .black
         outputWindow.ignoresMouseEvents = true
