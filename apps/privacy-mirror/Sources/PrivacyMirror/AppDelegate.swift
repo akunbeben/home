@@ -198,34 +198,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     private func updateShortcutLabels(_ shortcuts: AppConfiguration.Shortcuts) {
-        mainReloadMenuItem?.title = menuTitle("Reload Configuration", shortcut: shortcuts.reloadConfiguration)
-        statusReloadMenuItem?.title = menuTitle("Reload Configuration", shortcut: shortcuts.reloadConfiguration)
-        statusShowOutputMenuItem?.title = menuTitle("Show Output Window", shortcut: shortcuts.showOutput)
-        statusParkOutputMenuItem?.title = menuTitle("Park Output Window", shortcut: shortcuts.parkOutput)
+        mainReloadMenuItem?.title = "Reload Configuration"
+        statusReloadMenuItem?.title = "Reload Configuration"
+        statusShowOutputMenuItem?.title = "Show Output Window"
+        statusParkOutputMenuItem?.title = "Park Output Window"
+
+        applyShortcut(shortcuts.reloadConfiguration, to: mainReloadMenuItem)
+        applyShortcut(shortcuts.reloadConfiguration, to: statusReloadMenuItem)
+        applyShortcut(shortcuts.showOutput, to: statusShowOutputMenuItem)
+        applyShortcut(shortcuts.parkOutput, to: statusParkOutputMenuItem)
     }
 
-    private func menuTitle(_ title: String, shortcut: String) -> String {
-        "\(title)    \(shortcutLabel(shortcut))"
-    }
+    private func applyShortcut(_ shortcut: String, to item: NSMenuItem?) {
+        guard let item else { return }
+        guard let parsed = MenuShortcut.parse(shortcut) else {
+            item.keyEquivalent = ""
+            item.keyEquivalentModifierMask = []
+            return
+        }
 
-    private func shortcutLabel(_ shortcut: String) -> String {
-        shortcut
-            .split(separator: "+")
-            .map { part in
-                switch part.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
-                case "cmd", "command":
-                    "⌘"
-                case "control", "ctrl":
-                    "⌃"
-                case "option", "alt":
-                    "⌥"
-                case "shift":
-                    "⇧"
-                default:
-                    part.uppercased()
-                }
-            }
-            .joined()
+        item.keyEquivalent = parsed.key
+        item.keyEquivalentModifierMask = parsed.modifiers
     }
 
     private func resolveConfigurationURL() -> URL {
@@ -236,4 +229,40 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         return FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent(".config/privacy-mirror/config.json")
     }
+}
+
+private struct MenuShortcut {
+    let key: String
+    let modifiers: NSEvent.ModifierFlags
+
+    static func parse(_ shortcut: String) -> MenuShortcut? {
+        let parts = shortcut
+            .split(separator: "+")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+            .filter { !$0.isEmpty }
+
+        guard let key = parts.last,
+              key.count == 1,
+              parts.count >= 2
+        else { return nil }
+
+        var modifiers: NSEvent.ModifierFlags = []
+        for part in parts.dropLast() {
+            guard let modifier = modifierFlags[part] else { return nil }
+            modifiers.insert(modifier)
+        }
+        guard !modifiers.isEmpty else { return nil }
+
+        return MenuShortcut(key: key, modifiers: modifiers)
+    }
+
+    private static let modifierFlags: [String: NSEvent.ModifierFlags] = [
+        "cmd": .command,
+        "command": .command,
+        "control": .control,
+        "ctrl": .control,
+        "option": .option,
+        "alt": .option,
+        "shift": .shift,
+    ]
 }
