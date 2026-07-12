@@ -4,7 +4,7 @@ import PrivacyMirrorCore
 
 @MainActor
 final class MirrorView: NSView {
-    private let displayLayer = AVSampleBufferDisplayLayer()
+    private var displayLayer = AVSampleBufferDisplayLayer()
     private let statusLabel = NSTextField(labelWithString: "Starting Privacy Mirror…")
     private var placeholderViews: [NSView] = []
 
@@ -15,8 +15,7 @@ final class MirrorView: NSView {
         wantsLayer = true
         layer?.backgroundColor = NSColor.black.cgColor
 
-        displayLayer.videoGravity = .resizeAspect
-        layer?.addSublayer(displayLayer)
+        installDisplayLayer()
 
         statusLabel.textColor = .white
         statusLabel.font = .systemFont(ofSize: 18, weight: .medium)
@@ -37,21 +36,21 @@ final class MirrorView: NSView {
     func enqueue(_ sampleBuffer: CMSampleBuffer) {
         statusLabel.isHidden = true
         if displayLayer.status == .failed {
-            displayLayer.flush()
+            resetDisplayLayer()
         }
         displayLayer.enqueue(sampleBuffer)
     }
 
     func showError(_ message: String) {
         removePlaceholders()
-        displayLayer.flushAndRemoveImage()
+        resetDisplayLayer()
         statusLabel.stringValue = message
         statusLabel.isHidden = false
     }
 
     func blank() {
         removePlaceholders()
-        displayLayer.flushAndRemoveImage()
+        resetDisplayLayer()
         statusLabel.stringValue = "Reclassifying windows…"
         statusLabel.isHidden = false
     }
@@ -76,6 +75,18 @@ final class MirrorView: NSView {
 
     private func makePlaceholder(style: PlaceholderStyle, frame: CGRect) -> NSView {
         PrivacyPlaceholderView(frame: frame, style: style)
+    }
+
+    private func resetDisplayLayer() {
+        displayLayer.removeFromSuperlayer()
+        displayLayer = AVSampleBufferDisplayLayer()
+        installDisplayLayer()
+        displayLayer.frame = bounds
+    }
+
+    private func installDisplayLayer() {
+        displayLayer.videoGravity = .resizeAspect
+        layer?.insertSublayer(displayLayer, at: 0)
     }
 
     private func removePlaceholders() {

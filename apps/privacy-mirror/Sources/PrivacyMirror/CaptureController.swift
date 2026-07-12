@@ -192,7 +192,7 @@ final class CaptureController: NSObject {
         configuration.width = max(1, Int(Double(displayWidth) * scale))
         configuration.height = max(1, Int(Double(displayHeight) * scale))
         configuration.minimumFrameInterval = CMTime(value: 1, timescale: CMTimeScale(snapshot.captureFrameRate))
-        configuration.queueDepth = 1
+        configuration.queueDepth = 2
         configuration.showsCursor = snapshot.showsCursor
         configuration.capturesAudio = false
         return configuration
