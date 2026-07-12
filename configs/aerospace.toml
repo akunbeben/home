@@ -114,6 +114,7 @@ on-mode-changed = []
     # '''
 
     alt-t = "exec-and-forget open -n -a Kitty"
+    alt-p = "exec-and-forget share-safe on"
     alt-r = "exec-and-forget open -a System\\ Settings"
     alt-d = "exec-and-forget open -a TablePlus"
     alt-w = "exec-and-forget open -a WhatsApp"
@@ -181,6 +182,48 @@ on-mode-changed = []
     alt-shift-semicolon = 'mode service'
     
     alt-shift-space = 'layout floating tiling'
+
+# Presentation bindings deliberately omit private workspaces 5-8 and service mode.
+[mode.present.binding]
+    alt-p = 'exec-and-forget share-safe off'
+
+    # Keep normal shortcuts available while the restricted mode is active.
+    alt-t = 'trigger-binding --mode main alt-t'
+    alt-r = 'trigger-binding --mode main alt-r'
+    alt-d = 'trigger-binding --mode main alt-d'
+    alt-w = 'trigger-binding --mode main alt-w'
+    alt-e = 'trigger-binding --mode main alt-e'
+    alt-c = 'trigger-binding --mode main alt-c'
+    cmd-alt-c = 'trigger-binding --mode main cmd-alt-c'
+    alt-b = 'trigger-binding --mode main alt-b'
+    alt-shift-b = 'trigger-binding --mode main alt-shift-b'
+    alt-ctrl-p = 'trigger-binding --mode main alt-ctrl-p'
+    alt-shift-p = 'trigger-binding --mode main alt-shift-p'
+    cmd-alt-shift-s = 'trigger-binding --mode main cmd-alt-shift-s'
+    alt-slash = 'trigger-binding --mode main alt-slash'
+    alt-comma = 'trigger-binding --mode main alt-comma'
+    alt-h = 'trigger-binding --mode main alt-h'
+    alt-l = 'trigger-binding --mode main alt-l'
+    alt-j = 'trigger-binding --mode main alt-j'
+    alt-k = 'trigger-binding --mode main alt-k'
+    cmd-alt-h = 'trigger-binding --mode main cmd-alt-h'
+    cmd-alt-l = 'trigger-binding --mode main cmd-alt-l'
+    cmd-alt-j = 'trigger-binding --mode main cmd-alt-j'
+    cmd-alt-k = 'trigger-binding --mode main cmd-alt-k'
+    alt-shift-space = 'trigger-binding --mode main alt-shift-space'
+
+    alt-1 = 'workspace 1'
+    alt-2 = 'workspace 2'
+    alt-3 = 'workspace 3'
+    alt-4 = 'workspace 4'
+    alt-shift-1 = 'move-node-to-workspace 1 --focus-follows-window'
+    alt-shift-2 = 'move-node-to-workspace 2 --focus-follows-window'
+    alt-shift-3 = 'move-node-to-workspace 3 --focus-follows-window'
+    alt-shift-4 = 'move-node-to-workspace 4 --focus-follows-window'
+
+    # Block the native app switcher; Dock/Spotlight activation is handled by the watchdog.
+    cmd-tab = 'true'
+    cmd-shift-tab = 'true'
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes

@@ -2,6 +2,7 @@
 let
   ssht     = import ../pkgs/ssht.nix { inherit pkgs; };
   work     = import ../pkgs/work.nix { inherit pkgs; };
+  shareSafe = import ../pkgs/share-safe.nix { inherit pkgs; };
   eops     = import ../pkgs/eops.nix { inherit pkgs; };
   opencode = import ../pkgs/opencode.nix { inherit pkgs; };
   bocRepos = import "${inputs.private}/boc.nix";
@@ -70,6 +71,7 @@ in {
     # Custom
     ssht
     work
+    shareSafe
     eops
     boc
     gws
