@@ -75,6 +75,9 @@ in {
 
     ".config/aerospace/aerospace.toml".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/aerospace.toml";
+    # Keep the policy editable in-repo; Privacy Mirror reloads it with Cmd+R.
+    ".config/privacy-mirror/config.json".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/privacy-mirror.json";
     # nvim uses mkOutOfStoreSymlink so lazy-lock.json stays writable in the repo
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/nvim";

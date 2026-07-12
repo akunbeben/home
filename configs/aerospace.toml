@@ -164,14 +164,14 @@ on-mode-changed = []
     alt-8 = 'workspace 8'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-    alt-shift-1 = 'move-node-to-workspace 1 --focus-follows-window'
-    alt-shift-2 = 'move-node-to-workspace 2 --focus-follows-window'
-    alt-shift-3 = 'move-node-to-workspace 3 --focus-follows-window'
-    alt-shift-4 = 'move-node-to-workspace 4 --focus-follows-window'
-    alt-shift-5 = 'move-node-to-workspace 5 --focus-follows-window'
-    alt-shift-6 = 'move-node-to-workspace 6 --focus-follows-window'
-    alt-shift-7 = 'move-node-to-workspace 7 --focus-follows-window'
-    alt-shift-8 = 'move-node-to-workspace 8 --focus-follows-window'
+    alt-shift-1 = 'exec-and-forget privacy-mirror-move 1'
+    alt-shift-2 = 'exec-and-forget privacy-mirror-move 2'
+    alt-shift-3 = 'exec-and-forget privacy-mirror-move 3'
+    alt-shift-4 = 'exec-and-forget privacy-mirror-move 4'
+    alt-shift-5 = 'exec-and-forget privacy-mirror-move 5'
+    alt-shift-6 = 'exec-and-forget privacy-mirror-move 6'
+    alt-shift-7 = 'exec-and-forget privacy-mirror-move 7'
+    alt-shift-8 = 'exec-and-forget privacy-mirror-move 8'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     # alt-tab = 'workspace-back-and-forth'
