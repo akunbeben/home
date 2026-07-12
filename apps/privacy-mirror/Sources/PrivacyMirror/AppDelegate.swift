@@ -8,6 +8,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var statusItem: NSStatusItem?
     private var statusMenuItem: NSMenuItem?
     private var privateWorkspacesMenuItem: NSMenuItem?
+    private var mainReloadMenuItem: NSMenuItem?
+    private var statusReloadMenuItem: NSMenuItem?
+    private var statusShowOutputMenuItem: NSMenuItem?
+    private var statusParkOutputMenuItem: NSMenuItem?
     private var captureController: CaptureController?
     private var controlServer: ControlServer?
     private let hotKeyController = HotKeyController()
@@ -48,6 +52,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 startControlServer(controller: controller)
             }
             privateWorkspacesMenuItem?.title = "Private workspaces: \(configuration.excludedWorkspaces.joined(separator: ", "))"
+            updateShortcutLabels(configuration.shortcuts)
             updateStatus("Ready — share Output, then park to start mirroring")
             try hotKeyController.register(
                 shortcuts: configuration.shortcuts,
@@ -117,7 +122,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let reloadItem = NSMenuItem(
             title: "Reload Configuration",
             action: #selector(reloadConfiguration),
-            keyEquivalent: "r"
+            keyEquivalent: ""
         )
         reloadItem.target = self
         appMenu.addItem(reloadItem)
@@ -127,6 +132,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         appMenuItem.submenu = appMenu
         mainMenu.addItem(appMenuItem)
         NSApp.mainMenu = mainMenu
+        mainReloadMenuItem = reloadItem
     }
 
     private func installStatusItem() {
@@ -143,7 +149,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         menu.addItem(privateWorkspaces)
         menu.addItem(.separator())
 
-        let reload = NSMenuItem(title: "Reload Configuration", action: #selector(reloadConfiguration), keyEquivalent: "r")
+        let reload = NSMenuItem(title: "Reload Configuration", action: #selector(reloadConfiguration), keyEquivalent: "")
         reload.target = self
         menu.addItem(reload)
 
@@ -162,6 +168,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         statusItem = item
         statusMenuItem = status
         privateWorkspacesMenuItem = privateWorkspaces
+        statusReloadMenuItem = reload
+        statusShowOutputMenuItem = showOutput
+        statusParkOutputMenuItem = parkOutput
     }
 
     @objc private func showOutputWindow() {
@@ -186,6 +195,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     private func updateStatus(_ status: String) {
         statusMenuItem?.title = status
+    }
+
+    private func updateShortcutLabels(_ shortcuts: AppConfiguration.Shortcuts) {
+        mainReloadMenuItem?.title = menuTitle("Reload Configuration", shortcut: shortcuts.reloadConfiguration)
+        statusReloadMenuItem?.title = menuTitle("Reload Configuration", shortcut: shortcuts.reloadConfiguration)
+        statusShowOutputMenuItem?.title = menuTitle("Show Output Window", shortcut: shortcuts.showOutput)
+        statusParkOutputMenuItem?.title = menuTitle("Park Output Window", shortcut: shortcuts.parkOutput)
+    }
+
+    private func menuTitle(_ title: String, shortcut: String) -> String {
+        "\(title)    \(shortcutLabel(shortcut))"
+    }
+
+    private func shortcutLabel(_ shortcut: String) -> String {
+        shortcut
+            .split(separator: "+")
+            .map { part in
+                switch part.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+                case "cmd", "command":
+                    "⌘"
+                case "control", "ctrl":
+                    "⌃"
+                case "option", "alt":
+                    "⌥"
+                case "shift":
+                    "⇧"
+                default:
+                    part.uppercased()
+                }
+            }
+            .joined()
     }
 
     private func resolveConfigurationURL() -> URL {
