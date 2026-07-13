@@ -156,8 +156,8 @@ on-mode-changed = []
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#resize
     # Let Kitty/tmux receive Option+Shift+h/l for pane resize.
-    # alt-shift-h = 'resize smart -50'
-    # alt-shift-l = 'resize smart +50'
+    alt-shift-h = 'resize smart -50'
+    alt-shift-l = 'resize smart +50'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
     alt-1 = 'workspace 1'
@@ -170,14 +170,15 @@ on-mode-changed = []
     alt-8 = 'workspace 8'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-    alt-shift-1 = 'exec-and-forget privacy-mirror-move 1'
-    alt-shift-2 = 'exec-and-forget privacy-mirror-move 2'
-    alt-shift-3 = 'exec-and-forget privacy-mirror-move 3'
-    alt-shift-4 = 'exec-and-forget privacy-mirror-move 4'
-    alt-shift-5 = 'exec-and-forget privacy-mirror-move 5'
-    alt-shift-6 = 'exec-and-forget privacy-mirror-move 6'
-    alt-shift-7 = 'exec-and-forget privacy-mirror-move 7'
-    alt-shift-8 = 'exec-and-forget privacy-mirror-move 8'
+    # AeroSpace's launchd PATH does not include the Home Manager profile.
+    alt-shift-1 = 'exec-and-forget /etc/profiles/per-user/benny/bin/privacy-mirror-move 1'
+    alt-shift-2 = 'exec-and-forget /etc/profiles/per-user/benny/bin/privacy-mirror-move 2'
+    alt-shift-3 = 'exec-and-forget /etc/profiles/per-user/benny/bin/privacy-mirror-move 3'
+    alt-shift-4 = 'exec-and-forget /etc/profiles/per-user/benny/bin/privacy-mirror-move 4'
+    alt-shift-5 = 'exec-and-forget /etc/profiles/per-user/benny/bin/privacy-mirror-move 5'
+    alt-shift-6 = 'exec-and-forget /etc/profiles/per-user/benny/bin/privacy-mirror-move 6'
+    alt-shift-7 = 'exec-and-forget /etc/profiles/per-user/benny/bin/privacy-mirror-move 7'
+    alt-shift-8 = 'exec-and-forget /etc/profiles/per-user/benny/bin/privacy-mirror-move 8'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     # alt-tab = 'workspace-back-and-forth'
