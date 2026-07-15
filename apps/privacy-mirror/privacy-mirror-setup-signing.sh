@@ -52,7 +52,6 @@ EOF
 /usr/bin/security import "$tmpdir/cert.p12" \
   -k "$keychain" \
   -P "$p12_password" \
-  -A \
   -T /usr/bin/codesign \
   >/dev/null
 

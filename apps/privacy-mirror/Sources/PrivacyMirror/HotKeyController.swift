@@ -46,9 +46,15 @@ final class HotKeyController {
         unregisterAll()
         self.actions = actions
 
-        try register(shortcuts.reloadConfiguration, for: .reloadConfiguration)
-        try register(shortcuts.showOutput, for: .showOutput)
-        try register(shortcuts.parkOutput, for: .parkOutput)
+        do {
+            try register(shortcuts.reloadConfiguration, for: .reloadConfiguration)
+            try register(shortcuts.showOutput, for: .showOutput)
+            try register(shortcuts.parkOutput, for: .parkOutput)
+        } catch {
+            unregisterAll()
+            self.actions.removeAll()
+            throw error
+        }
     }
 
     private func register(_ shortcut: String, for action: Action) throws {

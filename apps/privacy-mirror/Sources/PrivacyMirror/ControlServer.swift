@@ -13,7 +13,7 @@ final class ControlServer: @unchecked Sendable {
         unlink(socketPath)
 
         let descriptor = socket(AF_UNIX, SOCK_STREAM, 0)
-        guard descriptor >= 0 else { throw ControlServerError.systemCall("socket") }
+        guard descriptor >= 0 else { throw ControlServerError.systemCall("socket", errno) }
         socketDescriptor = descriptor
 
         var address = sockaddr_un()
@@ -35,11 +35,11 @@ final class ControlServer: @unchecked Sendable {
                 Darwin.bind(descriptor, $0, socklen_t(MemoryLayout<sockaddr_un>.size))
             }
         }
-        guard bindResult == 0 else { throw ControlServerError.systemCall("bind") }
+        guard bindResult == 0 else { throw ControlServerError.systemCall("bind", errno) }
         guard chmod(socketPath, S_IRUSR | S_IWUSR) == 0 else {
-            throw ControlServerError.systemCall("chmod")
+            throw ControlServerError.systemCall("chmod", errno)
         }
-        guard listen(descriptor, 4) == 0 else { throw ControlServerError.systemCall("listen") }
+        guard listen(descriptor, 4) == 0 else { throw ControlServerError.systemCall("listen", errno) }
 
         let source = DispatchSource.makeReadSource(fileDescriptor: descriptor, queue: queue)
         source.setEventHandler { [weak self] in
@@ -82,14 +82,14 @@ final class ControlServer: @unchecked Sendable {
 
 private enum ControlServerError: LocalizedError {
     case socketPathTooLong
-    case systemCall(String)
+    case systemCall(String, Int32)
 
     var errorDescription: String? {
         switch self {
         case .socketPathTooLong:
             "Privacy Mirror control socket path is too long"
-        case .systemCall(let name):
-            "Privacy Mirror control socket failed during \(name): \(String(cString: strerror(errno)))"
+        case .systemCall(let name, let errorNumber):
+            "Privacy Mirror control socket failed during \(name): \(String(cString: strerror(errorNumber)))"
         }
     }
 }
