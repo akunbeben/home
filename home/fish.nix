@@ -134,12 +134,7 @@
     functions = {
       kitty-theme-sync = {
         body = ''
-          set mode (defaults read -g AppleInterfaceStyle 2>/dev/null)
-          if test "$mode" = Dark
-              set theme ~/.config/kitty/kitty-themes/themes/Dracula.conf
-          else
-              set theme ~/.config/kitty/themes/latte.conf
-          end
+          set theme ~/.config/kitty/kitty-themes/themes/TokyoNightStorm.conf
           for sock in /tmp/kitty-*
               test -S $sock; and /Applications/kitty.app/Contents/MacOS/kitty @ --to unix:$sock \
                   set-colors --all $theme 2>/dev/null

@@ -69,9 +69,9 @@ pkgs.writeShellScriptBin "boc" ''
 
     local prev_name name
 
-    tmux new-session -d -s "$session" -n "eops" \
-      "fish -C 'cd \"$eops_dir\"; claude'"
-    prev_name="eops"
+    tmux new-session -d -s "$session" -n "workspace" \
+      "fish -C 'cd \"$eops_dir\"; opencode'"
+    prev_name="workspace"
 
     for repo in "''${work_repos[@]}"; do
       name=$(basename "$repo")
@@ -80,7 +80,7 @@ pkgs.writeShellScriptBin "boc" ''
       prev_name="$name"
     done
 
-    tmux select-window -t "$session:eops"
+    tmux select-window -t "$session:workspace"
     _refresh_tmux_context
     _tmux_go "$session"
   }
@@ -119,7 +119,7 @@ pkgs.writeShellScriptBin "boc" ''
       echo ""
       echo "Commands:"
       echo "  gst     Show git status table for all BOC repos"
-      echo "  work    Open tmux session with all repos (nvim) + eops (claude)"
+      echo "  work    Open tmux session with all repos (nvim) + eops (opencode)"
       ;;
   esac
 ''

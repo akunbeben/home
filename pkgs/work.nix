@@ -67,31 +67,31 @@ pkgs.writeShellScriptBin "work" ''
   tmux has-session -t "$SESSION" 2>/dev/null
   if [ $? != 0 ]; then
     tmux new-session -d -s "$SESSION" -c "$PROJECT_DIR"
-    tmux send-keys -t "$SESSION:0" "$WINDOW_1_COMMAND" C-m
+    tmux send-keys -t "$SESSION:1" "$WINDOW_1_COMMAND" C-m
 
     tmux new-window -t "$SESSION" -c "$PROJECT_DIR"
-    [ ! -z "$WINDOW_2_COMMAND" ] && tmux send-keys -t "$SESSION:1" "$WINDOW_2_COMMAND" C-m
+    [ ! -z "$WINDOW_2_COMMAND" ] && tmux send-keys -t "$SESSION:2" "$WINDOW_2_COMMAND" C-m
 
     tmux new-window -t "$SESSION" -c "$PROJECT_DIR"
-    [ ! -z "$WINDOW_3_COMMAND" ] && tmux send-keys -t "$SESSION:2" "$WINDOW_3_COMMAND" C-m
+    [ ! -z "$WINDOW_3_COMMAND" ] && tmux send-keys -t "$SESSION:3" "$WINDOW_3_COMMAND" C-m
 
     tmux new-window -t "$SESSION" -c "$PROJECT_DIR"
 
     i=0
     for cmd in "''${WINDOW_4_PANES[@]}"; do
       if [ "$i" -eq 0 ]; then
-        tmux select-pane -t "$SESSION:3.0"
+        tmux select-pane -t "$SESSION:4.0"
         tmux send-keys "$cmd" C-m
       else
-        tmux split-window -v -t "$SESSION:3" -c "$PROJECT_DIR"
-        tmux select-pane -t "$SESSION:3.$i"
+        tmux split-window -v -t "$SESSION:4" -c "$PROJECT_DIR"
+        tmux select-pane -t "$SESSION:4.$i"
         tmux send-keys "$cmd" C-m
       fi
       i=$((i + 1))
     done
 
-    tmux select-layout -t "$SESSION:3" tiled
-    tmux select-window -t "$SESSION:0"
+    tmux select-layout -t "$SESSION:4" tiled
+    tmux select-window -t "$SESSION:1"
   fi
 
   tmux attach -t "$SESSION"

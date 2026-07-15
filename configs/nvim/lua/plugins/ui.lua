@@ -56,84 +56,46 @@ return {
         },
     },
     {
-        "catppuccin/nvim",
-        lazy = true,
-        name = "catppuccin",
+        "folke/tokyonight.nvim",
+        lazy = false,
+        priority = 1000,
         opts = {
-            transparent_background = true,
-            lsp_styles = {
-                underlines = {
-                    errors = { "undercurl" },
-                    hints = { "undercurl" },
-                    warnings = { "undercurl" },
-                    information = { "undercurl" },
-                },
-            },
-            integrations = {
-                aerial = true,
-                alpha = true,
-                cmp = true,
-                dashboard = true,
-                flash = true,
-                fzf = true,
-                grug_far = true,
-                gitsigns = true,
-                headlines = true,
-                illuminate = true,
-                indent_blankline = { enabled = true },
-                leap = true,
-                lsp_trouble = true,
-                mason = true,
-                mini = true,
-                navic = { enabled = true, custom_bg = "lualine" },
-                neotest = true,
-                neotree = true,
-                noice = true,
-                notify = true,
-                snacks = true,
-                telescope = true,
-                treesitter_context = true,
-                which_key = true,
+            style = "storm",
+            transparent = true,
+            styles = {
+                comments = { italic = false },
+                keywords = { italic = false },
             },
         },
-        specs = {
-            {
-                "akinsho/bufferline.nvim",
-                optional = true,
-                opts = function(_, opts)
-                    if (vim.g.colors_name or ""):find("catppuccin") then
-                        opts.highlights = require("catppuccin.special.bufferline").get_theme()
-                    end
-                end,
-            },
-        },
-    },
-    {
-        "akinsho/bufferline.nvim",
-        optional = true,
-        opts = function(_, opts)
-            if (vim.g.colors_name or ""):find("catppuccin") then
-                opts.highlights = require("catppuccin.special.bufferline").get_theme()
-            end
+        config = function(_, opts)
+            require("tokyonight").setup(opts)
+            vim.opt.termguicolors = true
+            vim.cmd.colorscheme("tokyonight-storm")
+            vim.g.terminal_color_0 = "#15161e"
+            vim.g.terminal_color_1 = "#f7768e"
+            vim.g.terminal_color_2 = "#9ece6a"
+            vim.g.terminal_color_3 = "#e0af68"
+            vim.g.terminal_color_4 = "#7aa2f7"
+            vim.g.terminal_color_5 = "#bb9af7"
+            vim.g.terminal_color_6 = "#7dcfff"
+            vim.g.terminal_color_7 = "#a9b1d6"
+            vim.g.terminal_color_8 = "#414868"
+            vim.g.terminal_color_9 = "#f7768e"
+            vim.g.terminal_color_10 = "#9ece6a"
+            vim.g.terminal_color_11 = "#e0af68"
+            vim.g.terminal_color_12 = "#7aa2f7"
+            vim.g.terminal_color_13 = "#bb9af7"
+            vim.g.terminal_color_14 = "#7dcfff"
+            vim.g.terminal_color_15 = "#c0caf5"
         end,
     },
     {
-        "uloco/bluloco.nvim",
-        lazy = false,
-        priority = 1000,
-        dependencies = { "rktjmp/lush.nvim" },
-        config = function()
-            require("bluloco").setup({
-                style = "auto", -- "auto" | "dark" | "light"
-                transparent = true,
-                italics = false,
-                terminal = vim.fn.has("gui_running") == 1, -- bluoco colors are enabled in gui terminals per default.
-                guicursor = true,
-                rainbow_headings = false, -- if you want different colored headings for each heading level
-                float_window = "default", -- "default" | "transparent"
+        "nvim-lualine/lualine.nvim",
+        optional = true,
+        opts = function(_, opts)
+            opts.options = vim.tbl_deep_extend("force", opts.options or {}, {
+                theme = "tokyonight",
             })
-
-            vim.opt.termguicolors = true
         end,
     },
     {
@@ -141,11 +103,11 @@ return {
         opts = {
             set_dark_mode = function()
                 vim.api.nvim_set_option_value("background", "dark", {})
-                vim.cmd("colorscheme bluloco")
+                vim.cmd("colorscheme tokyonight-storm")
             end,
             set_light_mode = function()
-                vim.api.nvim_set_option_value("background", "light", {})
-                vim.cmd("colorscheme bluloco")
+                vim.api.nvim_set_option_value("background", "dark", {})
+                vim.cmd("colorscheme tokyonight-storm")
             end,
             update_interval = 3000,
             fallback = "dark",
