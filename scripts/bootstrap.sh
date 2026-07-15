@@ -42,6 +42,7 @@ fi
 
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
+umask 077
 
 # Bitwarden strips the trailing newline from stored notes; private keys
 # require it or ssh-add will reject them as invalid.

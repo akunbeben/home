@@ -124,7 +124,7 @@
       set fish_greeting
       set -gx EDITOR nvim
 
-      envsource "$HOME/.env"
+      test -f "$HOME/.env"; and envsource "$HOME/.env"
 
       fnm env --use-on-cd --shell fish | source
 

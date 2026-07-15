@@ -6,7 +6,10 @@ let
   cloneIfMissing = dest: r: ''
     if [ ! -d "${dest}/${r.name}/.git" ]; then
       echo "  cloning ${r.name}..."
-      ${git} clone "${r.url}" "${dest}/${r.name}" || echo "  warning: failed to clone ${r.name}, skipping"
+      if ! ${git} clone "${r.url}" "${dest}/${r.name}"; then
+        echo "  warning: failed to clone ${r.name}, will retry next activation"
+        failed=1
+      fi
     fi
   '';
 in {
@@ -16,12 +19,15 @@ in {
     if [ ! -f "$sentinel" ]; then
       echo "==> Cloning repos (first time setup)..."
       mkdir -p "$HOME/Projects" "$HOME/Work"
+      failed=0
 
       ${lib.concatMapStrings (cloneIfMissing "$HOME/Projects") repos.personal}
       ${lib.concatMapStrings (cloneIfMissing "$HOME/Work")     repos.work}
 
-      mkdir -p "$(dirname "$sentinel")"
-      touch "$sentinel"
+      if [ "$failed" -eq 0 ]; then
+        mkdir -p "$(dirname "$sentinel")"
+        touch "$sentinel"
+      fi
     fi
   '';
 }
