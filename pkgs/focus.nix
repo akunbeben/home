@@ -7,13 +7,15 @@ pkgs.writeShellScriptBin "focus" ''
   SESSION_FILE="$STATE_DIR/session"
   PID_FILE="$STATE_DIR/worker.pid"
   SITES_FILE="$STATE_DIR/sites"
+  TICK_FILE="$STATE_DIR/ticking"
   ROOT_LOG="$STATE_DIR/blocker.log"
   WORKER_LOG="$STATE_DIR/worker.log"
   START_SOUND="/System/Library/Sounds/Glass.aiff"
   END_SOUND="/System/Library/Sounds/Hero.aiff"
+  TICK_SOUND="${../tick.mp3}"
 
   usage() {
-    echo "Usage: focus [start [minutes]|stop|status]" >&2
+    echo "Usage: focus [start [minutes]|stop|status|sound|silent]" >&2
   }
 
   now() {
@@ -44,7 +46,7 @@ pkgs.writeShellScriptBin "focus" ''
   }
 
   clear_state() {
-    /bin/rm -f "$SESSION_FILE" "$PID_FILE" "$SITES_FILE"
+    /bin/rm -f "$SESSION_FILE" "$PID_FILE" "$SITES_FILE" "$TICK_FILE"
   }
 
   play_sound() {
@@ -179,6 +181,49 @@ pkgs.writeShellScriptBin "focus" ''
     play_sound "$END_SOUND"
   }
 
+  tick_session() {
+    local token=$1
+    local end=$2
+    local audio_pid
+    while [ -e "$TICK_FILE" ]; do
+      load_session || break
+      [ "$SESSION_TOKEN" = "$token" ] || break
+      [ "$(now)" -lt "$end" ] || break
+      /usr/bin/afplay "$TICK_SOUND" >/dev/null 2>&1 &
+      audio_pid=$!
+      while kill -0 "$audio_pid" 2>/dev/null; do
+        if [ ! -e "$TICK_FILE" ] || ! load_session \
+          || [ "$SESSION_TOKEN" != "$token" ] || [ "$(now)" -ge "$end" ]; then
+          kill "$audio_pid" 2>/dev/null || true
+          wait "$audio_pid" 2>/dev/null || true
+          return
+        fi
+        /bin/sleep 0.2
+      done
+      wait "$audio_pid" 2>/dev/null || true
+    done
+  }
+
+  sound_on() {
+    if ! load_session || [ "$SESSION_END" -le "$(now)" ]; then
+      echo "Error: focus is inactive" >&2
+      exit 1
+    fi
+    if [ -e "$TICK_FILE" ]; then
+      echo "Clock ticking is already on"
+      return
+    fi
+
+    printf '%s\n' "$SESSION_TOKEN" > "$TICK_FILE"
+    /usr/bin/nohup "$0" _tick "$SESSION_TOKEN" "$SESSION_END" >/dev/null 2>&1 &
+    echo "Clock ticking on"
+  }
+
+  sound_off() {
+    /bin/rm -f "$TICK_FILE"
+    echo "Clock ticking off"
+  }
+
   start_session() {
     local minutes=$1
     valid_minutes "$minutes" || {
@@ -212,7 +257,6 @@ pkgs.writeShellScriptBin "focus" ''
     trap cleanup_start EXIT
     trap 'exit 130' HUP INT TERM
 
-    echo "Focus needs sudo to block entertainment websites."
     /usr/bin/sudo -v
     /usr/bin/nohup /usr/bin/sudo -n "$0" _guard "$token" "$end" "$SITES_FILE" \
       > "$ROOT_LOG" 2>&1 &
@@ -307,6 +351,14 @@ pkgs.writeShellScriptBin "focus" ''
       [ "$#" -eq 1 ] || { usage; exit 1; }
       stop_session
       ;;
+    sound)
+      [ "$#" -eq 1 ] || { usage; exit 1; }
+      sound_on
+      ;;
+    silent)
+      [ "$#" -eq 1 ] || { usage; exit 1; }
+      sound_off
+      ;;
     status)
       [ "$#" -le 2 ] || { usage; exit 1; }
       case "''${2:-}" in
@@ -327,6 +379,10 @@ pkgs.writeShellScriptBin "focus" ''
     _finish)
       [ "$#" -eq 3 ] || exit 1
       finish_session "$2" "$3"
+      ;;
+    _tick)
+      [ "$#" -eq 3 ] || exit 1
+      tick_session "$2" "$3"
       ;;
     _self-test)
       self_test
