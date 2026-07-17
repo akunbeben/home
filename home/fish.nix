@@ -8,6 +8,7 @@
       l        = "eza --long --icons --group-directories-first";
       v        = "nvim .";
       t        = "tmux a";
+      tk       = "tmux kill-session";
       f        = "yazi";
       o        = "open";
       vim      = "nvim";
@@ -27,6 +28,7 @@
       mysqldump = "/usr/bin/mariadb-dump";
       php      = "valet php";
       composer = "valet composer";
+      claudex  = "CLAUDE_CODE_SUBAGENT_MODEL=gpt-5.6-sol CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 ENABLE_TOOL_SEARCH=false claude --model gpt-5.6-sol";
     };
 
     shellAbbrs = {
@@ -128,16 +130,52 @@
 
       fnm env --use-on-cd --shell fish | source
 
-      kitty-theme-sync 2>/dev/null
+      terminal-theme-sync 2>/dev/null
     '';
 
     functions = {
-      kitty-theme-sync = {
+      terminal-theme-sync = {
         body = ''
-          set theme ~/.config/kitty/kitty-themes/themes/TokyoNightStorm.conf
+          set -l mode (defaults read -g AppleInterfaceStyle 2>/dev/null)
+          if test "$mode" = Dark
+              set theme ~/.config/kitty/kitty-themes/themes/TokyoNightStorm.conf
+              set bg '#24283b'
+              set fg '#c0caf5'
+              set muted '#414868'
+              set green '#9ece6a'
+              set blue '#7aa2f7'
+              set cyan '#7dcfff'
+              set magenta '#bb9af7'
+              set yellow '#e0af68'
+          else
+              set theme ~/.config/kitty/kitty-themes/themes/TokyoNightDay.conf
+              set bg '#e1e2e7'
+              set fg '#3760bf'
+              set muted '#99a7df'
+              set green '#587539'
+              set blue '#2e7de9'
+              set cyan '#007197'
+              set magenta '#9854f1'
+              set yellow '#8c6c3e'
+          end
+
+          cp $theme ~/.config/kitty/current-theme.conf
+
           for sock in /tmp/kitty-*
               test -S $sock; and /Applications/kitty.app/Contents/MacOS/kitty @ --to unix:$sock \
                   set-colors --all $theme 2>/dev/null
+          end
+
+          if set -q TMUX
+              tmux set -g status-style "fg=$fg,bg=$bg"
+              tmux set -g status-left "#[fg=$bg,bg=$magenta,bold]  #S "
+              tmux set -g status-right "#[fg=$bg,bg=$cyan,bold]  #{cpu} #[fg=$bg,bg=$green]  #{mem} #[fg=$bg,bg=$yellow,bold]#(focus status --tmux)"
+              tmux set -g window-status-current-format "#[fg=$bg,bg=$blue,bold] #I:#W "
+              tmux set -g window-status-format "#[fg=$fg,bg=$muted] #I:#W "
+              tmux set -g message-style "fg=$cyan,bg=default"
+              tmux set -g mode-style "fg=$bg,bg=$yellow"
+              tmux set -g pane-border-style "fg=$bg"
+              tmux set -g pane-active-border-style "fg=$blue"
           end
         '';
       };

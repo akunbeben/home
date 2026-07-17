@@ -2,6 +2,7 @@
 let
   ssht     = import ../pkgs/ssht.nix { inherit pkgs; };
   work     = import ../pkgs/work.nix { inherit pkgs; };
+  focus    = import ../pkgs/focus.nix { inherit pkgs; };
   shareSafe = import ../pkgs/share-safe.nix { inherit pkgs; };
   privacyMirror = pkgs.callPackage ../pkgs/privacy-mirror.nix {};
   eops     = import ../pkgs/eops.nix { inherit pkgs; };
@@ -72,6 +73,7 @@ in {
     # Custom
     ssht
     work
+    focus
     shareSafe
     privacyMirror
     eops

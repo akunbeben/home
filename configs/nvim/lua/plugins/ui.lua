@@ -1,3 +1,47 @@
+local function set_tokyonight_terminal(style)
+    local colors = style == "day"
+            and {
+                "#e9e9ed",
+                "#f52a65",
+                "#587539",
+                "#8c6c3e",
+                "#2e7de9",
+                "#9854f1",
+                "#007197",
+                "#6172b0",
+                "#a1a6c5",
+                "#f52a65",
+                "#587539",
+                "#8c6c3e",
+                "#2e7de9",
+                "#9854f1",
+                "#007197",
+                "#3760bf",
+            }
+        or {
+            "#15161e",
+            "#f7768e",
+            "#9ece6a",
+            "#e0af68",
+            "#7aa2f7",
+            "#bb9af7",
+            "#7dcfff",
+            "#a9b1d6",
+            "#414868",
+            "#f7768e",
+            "#9ece6a",
+            "#e0af68",
+            "#7aa2f7",
+            "#bb9af7",
+            "#7dcfff",
+            "#c0caf5",
+        }
+
+    for index, color in ipairs(colors) do
+        vim.g["terminal_color_" .. (index - 1)] = color
+    end
+end
+
 return {
     {
         "christoomey/vim-tmux-navigator",
@@ -71,22 +115,7 @@ return {
             require("tokyonight").setup(opts)
             vim.opt.termguicolors = true
             vim.cmd.colorscheme("tokyonight-storm")
-            vim.g.terminal_color_0 = "#15161e"
-            vim.g.terminal_color_1 = "#f7768e"
-            vim.g.terminal_color_2 = "#9ece6a"
-            vim.g.terminal_color_3 = "#e0af68"
-            vim.g.terminal_color_4 = "#7aa2f7"
-            vim.g.terminal_color_5 = "#bb9af7"
-            vim.g.terminal_color_6 = "#7dcfff"
-            vim.g.terminal_color_7 = "#a9b1d6"
-            vim.g.terminal_color_8 = "#414868"
-            vim.g.terminal_color_9 = "#f7768e"
-            vim.g.terminal_color_10 = "#9ece6a"
-            vim.g.terminal_color_11 = "#e0af68"
-            vim.g.terminal_color_12 = "#7aa2f7"
-            vim.g.terminal_color_13 = "#bb9af7"
-            vim.g.terminal_color_14 = "#7dcfff"
-            vim.g.terminal_color_15 = "#c0caf5"
+            set_tokyonight_terminal("storm")
         end,
     },
     {
@@ -104,10 +133,12 @@ return {
             set_dark_mode = function()
                 vim.api.nvim_set_option_value("background", "dark", {})
                 vim.cmd("colorscheme tokyonight-storm")
+                set_tokyonight_terminal("storm")
             end,
             set_light_mode = function()
-                vim.api.nvim_set_option_value("background", "dark", {})
-                vim.cmd("colorscheme tokyonight-storm")
+                vim.api.nvim_set_option_value("background", "light", {})
+                vim.cmd("colorscheme tokyonight-day")
+                set_tokyonight_terminal("day")
             end,
             update_interval = 3000,
             fallback = "dark",

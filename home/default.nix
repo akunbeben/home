@@ -1,17 +1,51 @@
 { config, lib, pkgs, ... }:
 let
   kittyBin = "/Applications/kitty.app/Contents/MacOS/kitty";
+  tmuxBin = "${pkgs.tmux}/bin/tmux";
   privacyMirror = pkgs.callPackage ../pkgs/privacy-mirror.nix {};
   privacyMirrorSigningIdentity = "Privacy Mirror Local Code Signing";
   syncScript = ''
     MODE=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
-    [ "$MODE" = "Dark" ] \
-      && THEME="$HOME/.config/kitty/kitty-themes/themes/Dracula.conf" \
-      || THEME="$HOME/.config/kitty/themes/latte.conf"
+    if [ "$MODE" = "Dark" ]; then
+      THEME="$HOME/.config/kitty/kitty-themes/themes/TokyoNightStorm.conf"
+      BG="#24283b"
+      FG="#c0caf5"
+      MUTED="#414868"
+      GREEN="#9ece6a"
+      BLUE="#7aa2f7"
+      CYAN="#7dcfff"
+      MAGENTA="#bb9af7"
+      YELLOW="#e0af68"
+    else
+      THEME="$HOME/.config/kitty/kitty-themes/themes/TokyoNightDay.conf"
+      BG="#e1e2e7"
+      FG="#3760bf"
+      MUTED="#99a7df"
+      GREEN="#587539"
+      BLUE="#2e7de9"
+      CYAN="#007197"
+      MAGENTA="#9854f1"
+      YELLOW="#8c6c3e"
+    fi
+
+    /bin/cp "$THEME" "$HOME/.config/kitty/current-theme.conf"
+
     for SOCK in /tmp/kitty-*; do
       [ -S "$SOCK" ] && ${kittyBin} @ --to "unix:$SOCK" \
         set-colors --all "$THEME" 2>/dev/null || true
     done
+
+    if ${tmuxBin} info >/dev/null 2>&1; then
+      ${tmuxBin} set -g status-style "fg=$FG,bg=$BG"
+      ${tmuxBin} set -g status-left "#[fg=$BG,bg=$MAGENTA,bold]  #S "
+      ${tmuxBin} set -g status-right "#[fg=$BG,bg=$CYAN,bold]  #{cpu} #[fg=$BG,bg=$GREEN]  #{mem} #[fg=$BG,bg=$YELLOW,bold]#(focus status --tmux)"
+      ${tmuxBin} set -g window-status-current-format "#[fg=$BG,bg=$BLUE,bold] #I:#W "
+      ${tmuxBin} set -g window-status-format "#[fg=$FG,bg=$MUTED] #I:#W "
+      ${tmuxBin} set -g message-style "fg=$CYAN,bg=default"
+      ${tmuxBin} set -g mode-style "fg=$BG,bg=$YELLOW"
+      ${tmuxBin} set -g pane-border-style "fg=$BG"
+      ${tmuxBin} set -g pane-active-border-style "fg=$BLUE"
+    fi
   '';
   workHoursDisplayAwakeScript = ''
     weekday=$(/bin/date +%u)
@@ -104,6 +138,10 @@ in {
   '';
 
   home.file = {
+    ".pi/agent/keybindings.json".text = builtins.toJSON {
+      "tui.input.newLine" = "shift+enter";
+    };
+
     ".config/tmux/tmux.conf".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/tmux.conf";
     ".config/kitty".source = config.lib.file.mkOutOfStoreSymlink
