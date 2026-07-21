@@ -168,14 +168,17 @@
 
           if set -q TMUX
               tmux set -g status-style "fg=$fg,bg=$bg"
-              tmux set -g status-left "#[fg=$bg,bg=$magenta,bold]  #S "
-              tmux set -g status-right "#[fg=$bg,bg=$cyan,bold]  #{cpu} #[fg=$bg,bg=$green]  #{mem} #[fg=$bg,bg=$yellow,bold]#(focus status --tmux)"
-              tmux set -g window-status-current-format "#[fg=$bg,bg=$blue,bold] #I:#W "
-              tmux set -g window-status-format "#[fg=$fg,bg=$muted] #I:#W "
-              tmux set -g message-style "fg=$cyan,bg=default"
-              tmux set -g mode-style "fg=$bg,bg=$yellow"
-              tmux set -g pane-border-style "fg=$bg"
-              tmux set -g pane-active-border-style "fg=$blue"
+               tmux set -g status-left "#[fg=$bg,bg=$magenta,bold]    #S #[fg=$magenta,bg=$bg,nobold] "
+               tmux set -g status-right "#[fg=$cyan,bg=$bg]  #[fg=$fg]#(tmux-system-status cpu)  #[fg=$green]  #[fg=$fg]#(tmux-system-status memory) #[fg=$yellow,bold]#(focus status --tmux)"
+               tmux set -g window-status-current-format "#[fg=$blue,bg=$bg]#[fg=$bg,bg=$blue,bold] #I #W #[fg=$blue,bg=$bg,nobold] "
+               tmux set -g window-status-format "#[fg=$muted,bg=$bg] #I #[fg=$fg]#W "
+               tmux set -g message-style "fg=$bg,bg=$cyan,bold"
+               tmux set -g mode-style "fg=$bg,bg=$yellow"
+               tmux set -g clock-mode-colour "$blue"
+               tmux set -g pane-border-style "fg=$muted"
+               tmux set -g pane-active-border-style "fg=$blue"
+               tmux set -g popup-border-style "fg=$blue"
+               tmux set -g popup-style "fg=$fg,bg=$bg"
           end
         '';
       };

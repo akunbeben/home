@@ -7,6 +7,7 @@ let
   privacyMirror = pkgs.callPackage ../pkgs/privacy-mirror.nix {};
   eops     = import ../pkgs/eops.nix { inherit pkgs; };
   opencode = import ../pkgs/opencode.nix { inherit pkgs; };
+  tmuxSystemStatus = import ../pkgs/tmux-system-status.nix { inherit pkgs; };
   bocRepos = import "${inputs.private}/boc.nix";
   boc      = import ../pkgs/boc.nix  { inherit pkgs bocRepos; };
   gws      = inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default;
@@ -79,5 +80,6 @@ in {
     eops
     boc
     gws
+    tmuxSystemStatus
   ];
 }

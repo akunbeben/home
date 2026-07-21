@@ -37,14 +37,17 @@ let
 
     if ${tmuxBin} info >/dev/null 2>&1; then
       ${tmuxBin} set -g status-style "fg=$FG,bg=$BG"
-      ${tmuxBin} set -g status-left "#[fg=$BG,bg=$MAGENTA,bold]  #S "
-      ${tmuxBin} set -g status-right "#[fg=$BG,bg=$CYAN,bold]  #{cpu} #[fg=$BG,bg=$GREEN]  #{mem} #[fg=$BG,bg=$YELLOW,bold]#(focus status --tmux)"
-      ${tmuxBin} set -g window-status-current-format "#[fg=$BG,bg=$BLUE,bold] #I:#W "
-      ${tmuxBin} set -g window-status-format "#[fg=$FG,bg=$MUTED] #I:#W "
-      ${tmuxBin} set -g message-style "fg=$CYAN,bg=default"
+      ${tmuxBin} set -g status-left "#[fg=$BG,bg=$MAGENTA,bold]    #S #[fg=$MAGENTA,bg=$BG,nobold] "
+      ${tmuxBin} set -g status-right "#[fg=$CYAN,bg=$BG]  #[fg=$FG]#(tmux-system-status cpu)  #[fg=$GREEN]  #[fg=$FG]#(tmux-system-status memory) #[fg=$YELLOW,bold]#(focus status --tmux)"
+      ${tmuxBin} set -g window-status-current-format "#[fg=$BLUE,bg=$BG]#[fg=$BG,bg=$BLUE,bold] #I #W #[fg=$BLUE,bg=$BG,nobold] "
+      ${tmuxBin} set -g window-status-format "#[fg=$MUTED,bg=$BG] #I #[fg=$FG]#W "
+      ${tmuxBin} set -g message-style "fg=$BG,bg=$CYAN,bold"
       ${tmuxBin} set -g mode-style "fg=$BG,bg=$YELLOW"
-      ${tmuxBin} set -g pane-border-style "fg=$BG"
+      ${tmuxBin} set -g clock-mode-colour "$BLUE"
+      ${tmuxBin} set -g pane-border-style "fg=$MUTED"
       ${tmuxBin} set -g pane-active-border-style "fg=$BLUE"
+      ${tmuxBin} set -g popup-border-style "fg=$BLUE"
+      ${tmuxBin} set -g popup-style "fg=$FG,bg=$BG"
     fi
   '';
   workHoursDisplayAwakeScript = ''
