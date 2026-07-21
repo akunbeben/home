@@ -144,6 +144,8 @@ in {
 
     ".config/tmux/tmux.conf".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/tmux.conf";
+    ".config/focus/sites".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Projects/home/configs/focus/sites";
     ".config/kitty".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/kitty";
 

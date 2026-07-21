@@ -2,7 +2,7 @@
 let
   ssht     = import ../pkgs/ssht.nix { inherit pkgs; };
   work     = import ../pkgs/work.nix { inherit pkgs; };
-  focus    = import ../pkgs/focus.nix { inherit pkgs; };
+  focus    = (import ../pkgs/focus.nix { inherit pkgs; }).package;
   shareSafe = import ../pkgs/share-safe.nix { inherit pkgs; };
   privacyMirror = pkgs.callPackage ../pkgs/privacy-mirror.nix {};
   eops     = import ../pkgs/eops.nix { inherit pkgs; };

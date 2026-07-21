@@ -1,4 +1,7 @@
-{ pkgs, inputs, ... }: {
+{ pkgs, inputs, ... }:
+let
+  focusRoot = (import ../pkgs/focus.nix { inherit pkgs; }).root;
+in {
   imports = [
     ./homebrew.nix
     ./system.nix
@@ -12,6 +15,10 @@
 
   programs.fish.enable = true;
   environment.shells = [ pkgs.fish ];
+
+  security.sudo.extraConfig = ''
+    benny ALL = (root) NOPASSWD: ${focusRoot}/bin/focus-root
+  '';
 
   # Avoid building nix-darwin's generated option docs, which currently emit
   # a store-path context warning during evaluation.

@@ -50,6 +50,7 @@
       "font-jetbrains-mono-nerd-font"
       "font-fantasque-sans-mono-nerd-font"
       "font-sf-mono-nerd-font-ligaturized"
+      "font-kode-mono"
     ];
   };
 
