@@ -5,6 +5,9 @@
 vim.opt.scrolloff = 40
 vim.opt.termguicolors = true
 
+local apple_interface_style = vim.fn.system({ "defaults", "read", "-g", "AppleInterfaceStyle" })
+vim.opt.background = vim.v.shell_error == 0 and apple_interface_style:match("Dark") and "dark" or "light"
+
 vim.wo.wrap = false
 vim.wo.linebreak = true
 vim.wo.list = false

@@ -40,11 +40,11 @@
         '';
       }
       "google-chrome"
+      "discord"
       "whatsapp"
       "telegram"
       "raycast"
 
-      "karabiner-elements"
       "codex"
 
       "font-jetbrains-mono-nerd-font"
@@ -72,13 +72,7 @@
         --set-home \
         env \
         brew trust --tap nikitabobko/tap vicentereig/tap
-      PATH="${config.homebrew.prefix}/bin:${lib.makeBinPath [ pkgs.mas ]}:$PATH" \
-      sudo \
-        --preserve-env=PATH \
-        --user=${lib.escapeShellArg config.homebrew.user} \
-        --set-home \
-        env \
-        ${config.homebrew.onActivation.brewBundleCmd}
+      ${config.homebrew.onActivation.brewBundleCmd { onlyCheck = false; }}
     else
       echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
     fi

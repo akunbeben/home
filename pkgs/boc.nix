@@ -6,6 +6,8 @@ pkgs.writeShellScriptBin "boc" ''
   BOC_REPOS=(
     ${repoLines}
   )
+  BOC_EOPS_DIR="$HOME/Projects/everyday-ops"
+  BOC_WORK_REPOS=("''${BOC_REPOS[@]}" "$HOME/Work/better-boc-provision" "$HOME/Work/nodegraf" "$HOME/Work/keloola-ai")
 
   TL='┌' TR='┐' BL='└' BR='┘'
   H='─' V='│'
@@ -36,32 +38,152 @@ pkgs.writeShellScriptBin "boc" ''
     fi
   }
 
+  _current_size() {
+    local rows cols
+
+    if [ -n "$TMUX" ]; then
+      cols=$(tmux display-message -p '#{client_width}' 2>/dev/null)
+      rows=$(tmux display-message -p '#{client_height}' 2>/dev/null)
+    elif read -r rows cols < <(stty size 2>/dev/null); then
+      :
+    else
+      rows="''${LINES:-}"
+      cols="''${COLUMNS:-}"
+    fi
+
+    [ -n "$cols" ] && [ -n "$rows" ] && printf '%s %s\n' "$cols" "$rows"
+  }
+
+  _window_dir() {
+    local target="$1"
+    local name repo
+
+    name=$(tmux display-message -p -t "$target" '#{window_name}' 2>/dev/null)
+    if [ "$name" = "workspace" ]; then
+      printf '%s\n' "$BOC_EOPS_DIR"
+      return
+    fi
+
+    for repo in "''${BOC_WORK_REPOS[@]}"; do
+      if [ "$(basename "$repo")" = "$name" ]; then
+        printf '%s\n' "$repo"
+        return
+      fi
+    done
+  }
+
+  _is_shell() {
+    case "$1" in
+      sh|bash|zsh|fish) return 0 ;;
+      *) return 1 ;;
+    esac
+  }
+
+  _sync_bottom_pane_cwd() {
+    local target="$1"
+    local target_dir="$2"
+    local pane cmd path
+
+    [ -n "$target_dir" ] || return
+
+    pane=$(tmux list-panes -t "$target" -f '#{==:#{pane_index},1}' -F '#{pane_id}' 2>/dev/null)
+    [ -n "$pane" ] || return
+
+    cmd=$(tmux display-message -p -t "$pane" '#{pane_current_command}' 2>/dev/null)
+    path=$(tmux display-message -p -t "$pane" '#{pane_current_path}' 2>/dev/null)
+
+    _is_shell "$cmd" || return
+    [ "$path" = "$target_dir" ] && return
+
+    tmux send-keys -t "$pane" C-c "cd -- \"$target_dir\"" Enter
+  }
+
+  _ensure_window_layout() {
+    local target="$1"
+    local active_pane target_dir
+    local -a panes
+
+    mapfile -t panes < <(tmux list-panes -t "$target" -F '#{pane_id}' 2>/dev/null)
+    [ "''${#panes[@]}" -eq 0 ] && return
+
+    active_pane=$(tmux list-panes -t "$target" -f '#{pane_active}' -F '#{pane_id}' 2>/dev/null)
+    target_dir=$(_window_dir "$target")
+
+    if [ -z "$target_dir" ]; then
+      target_dir=$(tmux list-panes -t "$target" -f '#{pane_active}' -F '#{pane_current_path}' 2>/dev/null)
+    fi
+
+    if [ "''${#panes[@]}" -eq 1 ]; then
+      tmux split-window -d -v -t "$active_pane" -c "$target_dir"
+      mapfile -t panes < <(tmux list-panes -t "$target" -F '#{pane_id}' 2>/dev/null)
+    fi
+
+    # ponytail: don't collapse existing >2-pane windows because that would kill running work.
+    if [ "''${#panes[@]}" -eq 2 ]; then
+      tmux set-window-option -t "$target" main-pane-height 80%
+      tmux select-layout -t "$active_pane" main-horizontal >/dev/null
+      _sync_bottom_pane_cwd "$target" "$target_dir"
+    fi
+  }
+
+  _ensure_session_layout() {
+    local session="$1"
+    local window
+
+    while IFS= read -r window; do
+      _ensure_window_layout "$window"
+    done < <(tmux list-windows -t "$session" -F '#{window_id}')
+  }
+
+  _refresh_tmux_context() {
+    if [ -x "$BOC_EOPS_DIR/scripts/refresh-tmux-context.sh" ]; then
+      "$BOC_EOPS_DIR/scripts/refresh-tmux-context.sh" >/dev/null 2>&1 || true
+    fi
+  }
+
+  _ensure_repo_windows() {
+    local session="$1"
+    local repo name
+
+    for repo in "''${BOC_WORK_REPOS[@]}"; do
+      name=$(basename "$repo")
+      if tmux list-windows -t "$session" -F '#{window_name}' 2>/dev/null | grep -Fxq "$name"; then
+        continue
+      fi
+
+      tmux new-window -d -t "$session:" -c "$repo" -n "$name" "nvim ."
+    done
+  }
+
+  _set_layout_hooks() {
+    local session="$1"
+    local hook='run-shell "boc __layout-window #{window_id}"'
+
+    tmux set-hook -t "$session" client-attached "$hook"
+    tmux set-hook -t "$session" client-session-changed "$hook"
+    tmux set-hook -t "$session" client-resized "$hook"
+    tmux set-hook -t "$session" after-select-window "$hook"
+  }
+
+  cmd_layout_window() {
+    [ -n "''${1:-}" ] || return
+    _ensure_window_layout "$1"
+  }
+
   cmd_work() {
     local session="boc"
-    local eops_dir="$HOME/Projects/everyday-ops"
-    local -a work_repos=("''${BOC_REPOS[@]}" "$HOME/Work/better-boc-provision" "$HOME/Work/nodegraf" "$HOME/Work/keloola-ai")
-
-    _refresh_tmux_context() {
-      if [ -x "$eops_dir/scripts/refresh-tmux-context.sh" ]; then
-        "$eops_dir/scripts/refresh-tmux-context.sh" >/dev/null 2>&1 || true
-      fi
-    }
-
-    _ensure_repo_windows() {
-      local repo name
-
-      for repo in "''${work_repos[@]}"; do
-        name=$(basename "$repo")
-        if tmux list-windows -t "$session" -F '#{window_name}' 2>/dev/null | grep -Fxq "$name"; then
-          continue
-        fi
-
-        tmux new-window -d -t "$session:" -c "$repo" -n "$name" "nvim ."
-      done
-    }
+    local size cols rows
 
     if tmux has-session -t "$session" 2>/dev/null; then
-      _ensure_repo_windows
+      size=$(_current_size)
+      if [ -n "$size" ]; then
+        read -r cols rows <<<"$size"
+        tmux set-option -t "$session" default-size "$cols''${rows:+x$rows}" >/dev/null
+      fi
+
+      _set_layout_hooks "$session"
+      _ensure_repo_windows "$session"
+      _ensure_session_layout "$session"
       _refresh_tmux_context
       _tmux_go "$session"
       return
@@ -69,17 +191,28 @@ pkgs.writeShellScriptBin "boc" ''
 
     local prev_name name
 
-    tmux new-session -d -s "$session" -n "workspace" \
-      "fish -C 'cd \"$eops_dir\"; opencode'"
+    size=$(_current_size)
+    if [ -n "$size" ]; then
+      read -r cols rows <<<"$size"
+      tmux new-session -d -s "$session" -x "$cols" -y "$rows" -n "workspace" \
+        "fish -C 'cd \"$BOC_EOPS_DIR\"; opencode'"
+      tmux set-option -t "$session" default-size "$cols''${rows:+x$rows}" >/dev/null
+    else
+      tmux new-session -d -s "$session" -n "workspace" \
+        "fish -C 'cd \"$BOC_EOPS_DIR\"; opencode'"
+    fi
+
+    _set_layout_hooks "$session"
     prev_name="workspace"
 
-    for repo in "''${work_repos[@]}"; do
+    for repo in "''${BOC_WORK_REPOS[@]}"; do
       name=$(basename "$repo")
       tmux new-window -a -t "$session:$prev_name" -c "$repo" -n "$name"
       tmux send-keys -t "$session:$name" "nvim ." Enter
       prev_name="$name"
     done
 
+    _ensure_session_layout "$session"
     tmux select-window -t "$session:workspace"
     _refresh_tmux_context
     _tmux_go "$session"
@@ -112,6 +245,7 @@ pkgs.writeShellScriptBin "boc" ''
   }
 
   case "''${1:-}" in
+    __layout-window) cmd_layout_window "''${2:-}" ;;
     gst)  cmd_gst ;;
     work) cmd_work ;;
     *)

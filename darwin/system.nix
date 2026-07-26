@@ -3,6 +3,12 @@
     /usr/bin/pmset -a displaysleep 2
   '';
 
+  system.keyboard = {
+    enableKeyMapping = true;
+    remapCapsLockToEscape = true;
+    swapLeftCtrlAndFn = true;
+  };
+
   # Redirect GitHub HTTPS to the personal SSH alias so Homebrew can tap
   # public repos without credential prompts. Brew runs as the user but
   # reads /etc/gitconfig before home-manager has applied ~/.gitconfig.

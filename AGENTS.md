@@ -8,7 +8,7 @@ This repository is a nix-darwin plus Home Manager configuration for the `Macbook
 - `darwin/` contains system-level macOS, Homebrew, and shell setup.
 - `home/` contains Home Manager modules for packages, Fish, Git, SSH, Zen Browser, and repo activation.
 - `pkgs/` contains custom Nix packages and scripts (`ssht`, `work`, `boc`).
-- `configs/` contains raw dotfiles symlinked into the user environment, including Neovim, Kitty, tmux, Aerospace, and Karabiner.
+- `configs/` contains raw dotfiles symlinked into the user environment, including Neovim, Kitty, tmux, and Aerospace.
 - `scripts/` contains operational helpers for bootstrap and project scanning.
 
 Private Git identity and repo lists are imported through the private flake input, not stored here.

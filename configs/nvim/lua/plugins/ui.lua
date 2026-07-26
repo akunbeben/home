@@ -1,48 +1,15 @@
-local function set_tokyonight_terminal(style)
-    local colors = style == "day"
-            and {
-                "#e9e9ed",
-                "#f52a65",
-                "#587539",
-                "#8c6c3e",
-                "#2e7de9",
-                "#9854f1",
-                "#007197",
-                "#6172b0",
-                "#a1a6c5",
-                "#f52a65",
-                "#587539",
-                "#8c6c3e",
-                "#2e7de9",
-                "#9854f1",
-                "#007197",
-                "#3760bf",
-            }
-        or {
-            "#15161e",
-            "#f7768e",
-            "#9ece6a",
-            "#e0af68",
-            "#7aa2f7",
-            "#bb9af7",
-            "#7dcfff",
-            "#a9b1d6",
-            "#414868",
-            "#f7768e",
-            "#9ece6a",
-            "#e0af68",
-            "#7aa2f7",
-            "#bb9af7",
-            "#7dcfff",
-            "#c0caf5",
-        }
-
-    for index, color in ipairs(colors) do
-        vim.g["terminal_color_" .. (index - 1)] = color
-    end
+local function set_opencode(mode)
+    vim.api.nvim_set_option_value("background", mode, {})
+    vim.cmd.colorscheme("opencode")
 end
 
 return {
+    {
+        "LazyVim/LazyVim",
+        opts = {
+            colorscheme = "opencode",
+        },
+    },
     {
         "christoomey/vim-tmux-navigator",
         cmd = {
@@ -100,45 +67,13 @@ return {
         },
     },
     {
-        "folke/tokyonight.nvim",
-        lazy = false,
-        priority = 1000,
-        opts = {
-            style = "storm",
-            transparent = true,
-            styles = {
-                comments = { italic = false },
-                keywords = { italic = false },
-            },
-        },
-        config = function(_, opts)
-            require("tokyonight").setup(opts)
-            vim.opt.termguicolors = true
-            vim.cmd.colorscheme("tokyonight-storm")
-            set_tokyonight_terminal("storm")
-        end,
-    },
-    {
-        "nvim-lualine/lualine.nvim",
-        optional = true,
-        opts = function(_, opts)
-            opts.options = vim.tbl_deep_extend("force", opts.options or {}, {
-                theme = "tokyonight",
-            })
-        end,
-    },
-    {
         "f-person/auto-dark-mode.nvim",
         opts = {
             set_dark_mode = function()
-                vim.api.nvim_set_option_value("background", "dark", {})
-                vim.cmd("colorscheme tokyonight-storm")
-                set_tokyonight_terminal("storm")
+                set_opencode("dark")
             end,
             set_light_mode = function()
-                vim.api.nvim_set_option_value("background", "light", {})
-                vim.cmd("colorscheme tokyonight-day")
-                set_tokyonight_terminal("day")
+                set_opencode("light")
             end,
             update_interval = 3000,
             fallback = "dark",

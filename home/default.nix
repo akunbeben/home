@@ -7,25 +7,25 @@ let
   syncScript = ''
     MODE=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
     if [ "$MODE" = "Dark" ]; then
-      THEME="$HOME/.config/kitty/kitty-themes/themes/TokyoNightStorm.conf"
-      BG="#24283b"
-      FG="#c0caf5"
-      MUTED="#414868"
-      GREEN="#9ece6a"
-      BLUE="#7aa2f7"
-      CYAN="#7dcfff"
-      MAGENTA="#bb9af7"
-      YELLOW="#e0af68"
+      THEME="$HOME/.config/kitty/themes/opencode-dark.conf"
+      BG="#0a0a0a"
+      FG="#eeeeee"
+      MUTED="#808080"
+      GREEN="#7fd88f"
+      BLUE="#fab283"
+      CYAN="#56b6c2"
+      MAGENTA="#9d7cd8"
+      YELLOW="#f5a742"
     else
-      THEME="$HOME/.config/kitty/kitty-themes/themes/TokyoNightDay.conf"
-      BG="#e1e2e7"
-      FG="#3760bf"
-      MUTED="#99a7df"
-      GREEN="#587539"
-      BLUE="#2e7de9"
-      CYAN="#007197"
-      MAGENTA="#9854f1"
-      YELLOW="#8c6c3e"
+      THEME="$HOME/.config/kitty/themes/opencode-light.conf"
+      BG="#ffffff"
+      FG="#1a1a1a"
+      MUTED="#8a8a8a"
+      GREEN="#3d9a57"
+      BLUE="#3b7dd8"
+      CYAN="#318795"
+      MAGENTA="#d68c27"
+      YELLOW="#b0851f"
     fi
 
     /bin/cp "$THEME" "$HOME/.config/kitty/current-theme.conf"
@@ -160,8 +160,6 @@ in {
     # nvim uses mkOutOfStoreSymlink so lazy-lock.json stays writable in the repo
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home/configs/nvim";
-    ".config/karabiner/karabiner.json".source = config.lib.file.mkOutOfStoreSymlink
-      "${config.home.homeDirectory}/Projects/home/configs/karabiner.json";
     "Library/Keyboard Layouts/US-NoOption.keylayout".source = ../configs/US-NoOption.keylayout;
     ".config/workspaces".source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/Projects/home-private/workspaces";

@@ -3,32 +3,26 @@
     enable = true;
     enableDefaultConfig = false;
 
-    matchBlocks = {
+    settings = {
       "github.com-work" = {
-        hostname = "github.com";
-        identityFile = "~/.ssh/work";
-        identitiesOnly = true;
-        extraOptions = {
-          AddKeysToAgent = "yes";
-          UseKeychain = "yes";
-        };
+        HostName = "github.com";
+        IdentityFile = "~/.ssh/work";
+        IdentitiesOnly = true;
+        AddKeysToAgent = "yes";
+        UseKeychain = "yes";
       };
       "github.com-personal" = {
-        hostname = "github.com";
-        identityFile = "~/.ssh/personal";
-        identitiesOnly = true;
-        extraOptions = {
-          AddKeysToAgent = "yes";
-          UseKeychain = "yes";
-        };
+        HostName = "github.com";
+        IdentityFile = "~/.ssh/personal";
+        IdentitiesOnly = true;
+        AddKeysToAgent = "yes";
+        UseKeychain = "yes";
       };
       "*" = {
-        identityFile = "~/.ssh/infra";
-        identitiesOnly = true;
-        extraOptions = {
-          AddKeysToAgent = "yes";
-          UseKeychain = "yes";
-        };
+        IdentityFile = "~/.ssh/infra";
+        IdentitiesOnly = true;
+        AddKeysToAgent = "yes";
+        UseKeychain = "yes";
       };
     };
   };

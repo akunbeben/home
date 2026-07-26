@@ -45,7 +45,7 @@ pkgs/           custom derivations
 configs/        raw dotfiles symlinked by home-manager
   nvim/         Neovim config (mkOutOfStoreSymlink — stays writable)
   workspaces/   per-project tmux layouts (mkOutOfStoreSymlink — stays writable)
-  tmux.conf, kitty/, aerospace.toml, karabiner.json
+  tmux.conf, kitty/, aerospace.toml
 scripts/
   bootstrap.sh      first-time machine setup
   scan-projects.sh  scan ~/Projects for git repos → prints nix clone list
@@ -54,7 +54,7 @@ scripts/
 ## Package managers split
 
 - **Nix** manages: CLI tools (eza, bat, fd, ripgrep, fzf, jq, lazygit, lazydocker, lazysql, yazi), runtimes (fnm, bun, go, rustc/cargo), editors (neovim, tmux), and the custom pkgs above.
-- **Homebrew** manages: GUI casks (kitty, aerospace, Brave Browser, tableplus, karabiner-elements, raycast, fonts) and the PHP/Valet/Composer stack.
+- **Homebrew** manages: GUI casks (kitty, aerospace, Brave Browser, tableplus, raycast, fonts) and the PHP/Valet/Composer stack.
 
 ## Key architectural details
 

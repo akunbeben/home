@@ -8,7 +8,6 @@
       l        = "eza --long --icons --group-directories-first";
       v        = "nvim .";
       t        = "tmux a";
-      tk       = "tmux kill-session";
       f        = "yazi";
       o        = "open";
       vim      = "nvim";
@@ -86,7 +85,7 @@
 
       # Navigation
       cdd  = "cd -";
-      home = "cd ~";
+      home = "cd ~/Projects/home";
       root = "cd /";
       docs = "cd ~/Documents";
       dl   = "cd ~/Downloads";
@@ -134,29 +133,66 @@
     '';
 
     functions = {
+      tk = {
+        body = ''
+          if test (count $argv) -gt 1
+              echo "Usage: tk [session]" >&2
+              return 1
+          end
+
+          set -l target "$argv[1]"
+          if test -z "$target"
+              if not set -q TMUX
+                  echo "Usage: tk [session]" >&2
+                  return 1
+              end
+
+              set target (tmux display-message -p '#{session_name}')
+          end
+
+          if not tmux has-session -t "$target" 2>/dev/null
+              echo "No such tmux session: $target" >&2
+              return 1
+          end
+
+          set -l session (tmux display-message -p -t "$target" '#{session_name}')
+          set -l socket_path (tmux display-message -p -t "$target" '#{socket_path}')
+          tmux run-shell -b "bash $HOME/Projects/home/scripts/tmux-kill-session.sh $session $socket_path"
+        '';
+      };
       terminal-theme-sync = {
         body = ''
           set -l mode (defaults read -g AppleInterfaceStyle 2>/dev/null)
           if test "$mode" = Dark
-              set theme ~/.config/kitty/kitty-themes/themes/TokyoNightStorm.conf
-              set bg '#24283b'
-              set fg '#c0caf5'
-              set muted '#414868'
-              set green '#9ece6a'
-              set blue '#7aa2f7'
-              set cyan '#7dcfff'
-              set magenta '#bb9af7'
-              set yellow '#e0af68'
+              set theme ~/.config/kitty/themes/opencode-dark.conf
+              set bg '#0a0a0a'
+              set fg '#eeeeee'
+              set muted '#808080'
+              set green '#7fd88f'
+              set blue '#fab283'
+              set cyan '#56b6c2'
+              set magenta '#9d7cd8'
+              set yellow '#f5a742'
+              set command '#fab283'
+              set keyword '#9d7cd8'
+              set info '#56b6c2'
+              set error '#e06c75'
+              set selection '#1d1d25'
           else
-              set theme ~/.config/kitty/kitty-themes/themes/TokyoNightDay.conf
-              set bg '#e1e2e7'
-              set fg '#3760bf'
-              set muted '#99a7df'
-              set green '#587539'
-              set blue '#2e7de9'
-              set cyan '#007197'
-              set magenta '#9854f1'
-              set yellow '#8c6c3e'
+              set theme ~/.config/kitty/themes/opencode-light.conf
+              set bg '#ffffff'
+              set fg '#1a1a1a'
+              set muted '#8a8a8a'
+              set green '#3d9a57'
+              set blue '#3b7dd8'
+              set cyan '#318795'
+              set magenta '#d68c27'
+              set yellow '#b0851f'
+              set command '#3b7dd8'
+              set keyword '#d68c27'
+              set info '#318795'
+              set error '#d1383d'
+              set selection '#dfeaf7'
           end
 
           cp $theme ~/.config/kitty/current-theme.conf
@@ -166,8 +202,29 @@
                   set-colors --all $theme 2>/dev/null
           end
 
+          set -g fish_color_normal $fg
+          set -g fish_color_command $command
+          set -g fish_color_keyword $keyword
+          set -g fish_color_quote $green
+          set -g fish_color_redirection $info
+          set -g fish_color_end $info
+          set -g fish_color_error $error
+          set -g fish_color_param $fg
+          set -g fish_color_comment $muted
+          set -g fish_color_operator $info
+          set -g fish_color_escape $yellow
+          set -g fish_color_autosuggestion $muted
+          set -g fish_color_cwd $green
+          set -g fish_color_cwd_root $error
+          set -g fish_color_selection --background=$selection
+          set -g fish_color_search_match --background=$selection
+          set -g fish_pager_color_prefix $keyword
+          set -g fish_pager_color_completion $fg
+          set -g fish_pager_color_description $muted
+          set -g fish_pager_color_progress $muted
+
           if set -q TMUX
-              tmux set -g status-style "fg=$fg,bg=$bg"
+               tmux set -g status-style "fg=$fg,bg=$bg"
                tmux set -g status-left "#[fg=$bg,bg=$magenta,bold]    #S #[fg=$magenta,bg=$bg,nobold] "
                tmux set -g status-right "#[fg=$cyan,bg=$bg]  #[fg=$fg]#(tmux-system-status cpu)  #[fg=$green]  #[fg=$fg]#(tmux-system-status memory) #[fg=$yellow,bold]#(focus status --tmux)"
                tmux set -g window-status-current-format "#[fg=$blue,bg=$bg]#[fg=$bg,bg=$blue,bold] #I #W #[fg=$blue,bg=$bg,nobold] "
