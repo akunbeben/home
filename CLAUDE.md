@@ -68,6 +68,6 @@ scripts/
 
 **`work` CLI**: Reads `~/.config/workspaces/<project>.conf` (sourced on top of `default.conf`) to define up to 4 tmux windows with commands. Use `work edit <project>` to create/edit a conf, `work <project>` or `work .` to open the session.
 
-**`boc` CLI**: `boc gst` shows a git-status table across all BOC repos; `boc work` opens a tmux session with each repo in nvim + an eops window running Claude Code.
+**`boc` CLI**: `boc gst` shows a git-status table across all BOC repos; `boc work` opens a tmux session with each repo in a shell + an eops window running OpenCode.
 
 **Fish environment**: `~/.env` is loaded automatically via `envsource` on every shell start. Node version switching is handled by `fnm --use-on-cd`.

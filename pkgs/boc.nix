@@ -151,7 +151,7 @@ pkgs.writeShellScriptBin "boc" ''
         continue
       fi
 
-      tmux new-window -d -t "$session:" -c "$repo" -n "$name" "nvim ."
+      tmux new-window -d -t "$session:" -c "$repo" -n "$name"
     done
   }
 
@@ -208,7 +208,6 @@ pkgs.writeShellScriptBin "boc" ''
     for repo in "''${BOC_WORK_REPOS[@]}"; do
       name=$(basename "$repo")
       tmux new-window -a -t "$session:$prev_name" -c "$repo" -n "$name"
-      tmux send-keys -t "$session:$name" "nvim ." Enter
       prev_name="$name"
     done
 
@@ -253,7 +252,7 @@ pkgs.writeShellScriptBin "boc" ''
       echo ""
       echo "Commands:"
       echo "  gst     Show git status table for all BOC repos"
-      echo "  work    Open tmux session with all repos (nvim) + eops (opencode)"
+      echo "  work    Open tmux session with all repos + eops (opencode)"
       ;;
   esac
 ''
