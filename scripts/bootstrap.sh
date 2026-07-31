@@ -7,12 +7,27 @@
 #   2. Run this script: bash ~/Projects/home/scripts/bootstrap.sh
 
 set -e
+cleanup() {
+  [ -z "${homebrew_installer:-}" ] || rm -f "$homebrew_installer"
+  [ -z "${nix_installer:-}" ] || rm -f "$nix_installer"
+  [ -z "${android_bin:-}" ] || rm -f "$android_bin"
+  unset BW_PASSWORD BW_SESSION
+}
+trap cleanup EXIT
 
 # --- 1. Homebrew ---
 echo "==> Checking Homebrew..."
 if ! command -v brew &>/dev/null; then
   echo "  Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  homebrew_installer=$(mktemp)
+  curl --proto '=https' --tlsv1.2 -fsSL \
+    https://raw.githubusercontent.com/Homebrew/install/7f43d760bdb28c7813b06874eeabc46bd37a843e/install.sh \
+    -o "$homebrew_installer"
+  printf '%s  %s\n' \
+    8ff338091a5e10bb5fc040b38316648110f42feff057ecf9feaab51fd0a13ef9 \
+    "$homebrew_installer" | shasum -a 256 -c -
+  /bin/bash "$homebrew_installer"
+  rm -f "$homebrew_installer"
   eval "$(/opt/homebrew/bin/brew shellenv)"
 else
   echo "  Homebrew already installed."
@@ -50,6 +65,9 @@ umask 077
 bw get notes 8dc6a5f7-b7bb-4556-aae0-b43400e52bf6 > ~/.ssh/personal.pub
 { bw get notes e93686a1-fb28-4bc1-ab3c-b43400e53e61; printf '\n'; } > ~/.ssh/work
 bw get notes 0ce6f34e-3349-422b-9f30-b43400e547b1 > ~/.ssh/work.pub
+
+# Do not expose the vault session to SSH, Nix, Composer, or later installers.
+unset BW_SESSION
 
 chmod 600 ~/.ssh/personal ~/.ssh/work
 chmod 644 ~/.ssh/personal.pub ~/.ssh/work.pub
@@ -94,8 +112,15 @@ echo "  SSH keys restored."
 echo "==> Checking Nix..."
 if ! command -v nix &>/dev/null; then
   echo "  Installing Nix (Determinate Systems)..."
-  curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
-    | sh -s -- install --no-confirm
+  nix_installer=$(mktemp)
+  curl --proto '=https' --tlsv1.2 -fsSL \
+    https://raw.githubusercontent.com/DeterminateSystems/nix-installer/cd83fd3966519051dcb8d9495b4b6fc1f82eb519/nix-installer.sh \
+    -o "$nix_installer"
+  printf '%s  %s\n' \
+    cd5c4f80c7b20e0a4232b45c970de04d9b59484873cf933183bfa3547be2e64c \
+    "$nix_installer" | shasum -a 256 -c -
+  /bin/sh "$nix_installer" install --no-confirm
+  rm -f "$nix_installer"
   # shellcheck disable=SC1091
   . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 else
@@ -147,7 +172,17 @@ fi
 echo "==> Checking Android CLI..."
 if ! command -v android &>/dev/null; then
   echo "  Installing Android CLI..."
-  curl -fsSL https://dl.google.com/android/cli/latest/darwin_arm64/install.sh | bash
+  android_bin=$(mktemp)
+  curl --proto '=https' --tlsv1.2 -fsSL \
+    https://dl.google.com/android/cli/latest/darwin_arm64/android \
+    -o "$android_bin"
+  printf '%s  %s\n' \
+    d9db3cf8b1c2c35bc27bfe257a326caa8fee86787093f042475b5ff777f84d65 \
+    "$android_bin" | shasum -a 256 -c -
+  mkdir -p "$HOME/.local/bin"
+  mv "$android_bin" "$HOME/.local/bin/android"
+  chmod 755 "$HOME/.local/bin/android"
+  ANDROID_CLI_FRESH_INSTALL=1 "$HOME/.local/bin/android"
 else
   echo "  Android CLI already installed."
 fi

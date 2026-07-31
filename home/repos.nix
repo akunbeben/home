@@ -3,10 +3,15 @@ let
   repos = import "${inputs.private}/repos.nix";
   git   = "${pkgs.git}/bin/git";
 
-  cloneIfMissing = dest: r: ''
-    if [ ! -d "${dest}/${r.name}/.git" ]; then
+  cloneIfMissing = dest: r:
+    assert lib.match "^[A-Za-z0-9._-]+$" r.name != null;
+    let
+      repoPath = lib.escapeShellArg "${dest}/${r.name}";
+      repoUrl = lib.escapeShellArg r.url;
+    in ''
+    if [ ! -d ${repoPath}/.git ]; then
       echo "  cloning ${r.name}..."
-      if ! ${git} clone "${r.url}" "${dest}/${r.name}"; then
+      if ! ${git} clone ${repoUrl} ${repoPath}; then
         echo "  warning: failed to clone ${r.name}, will retry next activation"
         failed=1
       fi

@@ -1,3 +1,11 @@
 .DS_Store
 *.tmp
 store/
+.env
+.env.*
+*.bak
+*.backup
+*.swp
+*.swo
+.claude/settings.local.json
+.scratch/

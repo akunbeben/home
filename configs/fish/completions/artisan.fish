@@ -9,5 +9,8 @@ function __fish_artisan_commands
     __fish_artisan_commands_with_descriptions | cut -f 1
 end
 
-complete -c artisan -f -n 'test -f artisan; and __fish_use_subcommand' -a '(__fish_artisan_commands_with_descriptions)'
-complete -c artisan -f -n 'test -f artisan; and __fish_seen_subcommand_from help' -a '(__fish_artisan_commands)'
+# Running a project just for completion is opt-in because artisan is executable PHP.
+if test "$ARTISAN_COMPLETION_TRUSTED" = 1
+    complete -c artisan -f -n 'test -f artisan; and __fish_use_subcommand' -a '(__fish_artisan_commands_with_descriptions)'
+    complete -c artisan -f -n 'test -f artisan; and __fish_seen_subcommand_from help' -a '(__fish_artisan_commands)'
+end

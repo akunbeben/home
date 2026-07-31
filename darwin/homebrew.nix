@@ -2,8 +2,10 @@
   homebrew = {
     enable = true;
     onActivation = {
-      autoUpdate = true;
-      upgrade = true;
+      # ponytail: review updates through the flake/rebuild instead of running
+      # mutable third-party installer code on every activation.
+      autoUpdate = false;
+      upgrade = false;
     };
 
     taps = [
@@ -21,7 +23,6 @@
       "wireguard-tools"
       "bitwarden-cli"
       "rtk"
-      "whatsapp-cli"
       "sherlock"
     ];
 

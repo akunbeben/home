@@ -34,6 +34,21 @@ _pad()   { printf "%-${1}s" "$2"; }
 _top()   { printf '%s%s%s%s%s\n' "$TL" "$(_hline "$1")" "$TM" "$(_hline "$2")" "$TR"; }
 _mid()   { printf '%s%s%s%s%s\n' "$LM" "$(_hline "$1")" "$CR" "$(_hline "$2")" "$RM"; }
 _bot()   { printf '%s%s%s%s%s\n' "$BL" "$(_hline "$1")" "$BM" "$(_hline "$2")" "$BR"; }
+
+_terminal_safe() {
+  LC_ALL=C tr -cd '\11\12\15\40-\176'
+}
+
+_nix_quote() {
+  local value="$1"
+  value=${value//\\/\\\\}
+  value=${value//\"/\\\"}
+  value=${value//$'\n'/\\n}
+  value=${value//$'\r'/\\r}
+  value=${value//$'\t'/\\t}
+  value=${value//\$\{/\\\$\{}
+  printf '"%s"' "$value"
+}
 _row()   { printf '%s %s %s %s %s\n' "$V" "$(_pad "$(($1-2))" "$3")" "$V" "$(_pad "$(($2-2))" "$4")" "$V"; }
 
 _print_table() {
@@ -49,8 +64,10 @@ _print_table() {
     path="${entry%%|*}"
     url="${entry##*|}"
     name=$(basename "$path")
-    (( ${#name} + 2 > w1 )) && w1=$(( ${#name} + 2 ))
-    (( ${#url}  + 2 > w2 )) && w2=$(( ${#url}  + 2 ))
+    safe_name=$(printf '%s' "$name" | _terminal_safe)
+    safe_url=$(printf '%s' "$url" | _terminal_safe)
+    (( ${#safe_name} + 2 > w1 )) && w1=$(( ${#safe_name} + 2 ))
+    (( ${#safe_url}  + 2 > w2 )) && w2=$(( ${#safe_url}  + 2 ))
   done
 
   echo ""
@@ -62,7 +79,7 @@ _print_table() {
   for entry in "${rows[@]}"; do
     path="${entry%%|*}"
     url="${entry##*|}"
-    _row "$w1" "$w2" "$(basename "$path")" "$url"
+    _row "$w1" "$w2" "$(basename "$path" | _terminal_safe)" "$(printf '%s' "$url" | _terminal_safe)"
     (( i < ${#rows[@]} - 1 )) && _mid "$w1" "$w2"
     (( i++ )) || true
   done
@@ -87,7 +104,7 @@ for entry in "${personal_repos[@]+"${personal_repos[@]}"}"; do
   path="${entry%%|*}"
   url="${entry##*|}"
   name=$(basename "$path")
-  echo "    { name = \"$name\"; url = \"$url\"; }"
+  printf '    { name = %s; url = %s; }\n' "$(_nix_quote "$name")" "$(_nix_quote "$url")"
 done
 
 echo "  ];"
@@ -98,7 +115,7 @@ for entry in "${work_repos[@]+"${work_repos[@]}"}"; do
   path="${entry%%|*}"
   url="${entry##*|}"
   name=$(basename "$path")
-  echo "    { name = \"$name\"; url = \"$url\"; }"
+  printf '    { name = %s; url = %s; }\n' "$(_nix_quote "$name")" "$(_nix_quote "$url")"
 done
 
 echo "  ];"

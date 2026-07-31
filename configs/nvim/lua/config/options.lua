@@ -21,6 +21,16 @@ vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
     end,
 })
 
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+    pattern = { ".env", ".env.*", "*.env", "*.env.*" },
+    callback = function()
+        vim.opt_local.backup = false
+        vim.opt_local.writebackup = false
+        vim.opt_local.swapfile = false
+        vim.opt_local.undofile = false
+    end,
+})
+
 pcall(function()
     vim.fn.serverstart(vim.fn.stdpath("run") .. "/pi-" .. vim.fn.getpid() .. ".sock")
 end)

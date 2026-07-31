@@ -1,6 +1,7 @@
 { pkgs }:
 pkgs.writeShellScriptBin "share-safe" ''
   set -euo pipefail
+  umask 077
 
   AEROSPACE=$(command -v aerospace || true)
   if [ -z "$AEROSPACE" ] && [ -x /opt/homebrew/bin/aerospace ]; then
@@ -18,6 +19,20 @@ pkgs.writeShellScriptBin "share-safe" ''
   EVENT_PIPE="$STATE_DIR/events"
   LOG_FILE="$STATE_DIR/watchdog.log"
 
+  ensure_state_dir() {
+    mkdir -p "$STATE_DIR"
+    chmod 700 "$STATE_DIR"
+    [ "$(/usr/bin/stat -f %u "$STATE_DIR")" = "$UID" ]
+  }
+
+  valid_pid() {
+    [ -n "$1" ] || return 1
+    case "$1" in
+      *[!0-9]*|0) return 1 ;;
+    esac
+    [ "$1" -gt 0 ]
+  }
+
   notify() {
     /usr/bin/osascript -e "display notification \"$1\" with title \"Share Safe\"" \
       >/dev/null 2>&1 || true
@@ -33,12 +48,18 @@ pkgs.writeShellScriptBin "share-safe" ''
 
   watchdog_running() {
     [ -f "$PID_FILE" ] || return 1
+    [ ! -L "$PID_FILE" ] || return 1
     pid=$(<"$PID_FILE")
-    kill -0 "$pid" 2>/dev/null
+    valid_pid "$pid" || return 1
+    kill -0 "$pid" 2>/dev/null || return 1
+    case "$(/bin/ps -p "$pid" -o command= 2>/dev/null || true)" in
+      *"_watch"*) return 0 ;;
+      *) return 1 ;;
+    esac
   }
 
   start_guard() {
-    mkdir -p "$STATE_DIR"
+    ensure_state_dir
 
     workspace=$(current_workspace)
     case "$workspace" in
@@ -81,7 +102,7 @@ pkgs.writeShellScriptBin "share-safe" ''
   }
 
   watch_guard() {
-    mkdir -p "$STATE_DIR"
+    ensure_state_dir
     rm -f "$EVENT_PIPE"
     /usr/bin/mkfifo "$EVENT_PIPE"
 

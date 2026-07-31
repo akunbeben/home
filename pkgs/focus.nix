@@ -35,14 +35,17 @@ let
     hosts_on() {
       local token=$1
       local sites=$2
-      local domain count=0 owner size
+      local domain count=0 owner size fd
       local -a domains=()
 
       valid_token "$token" || { echo "Error: invalid focus token" >&2; return 1; }
       [ -f "$sites" ] || { echo "Error: sites file not found" >&2; return 1; }
-      owner=$(/usr/bin/stat -f %u "$sites")
+      # Open once before checking metadata so a path swap cannot change the
+      # file that root later parses.
+      exec {fd}<"$sites" || { echo "Error: cannot open sites file" >&2; return 1; }
+      owner=$(/usr/bin/stat -f %u "/dev/fd/$fd")
       [ "$owner" = "''${SUDO_UID:-}" ] || { echo "Error: sites file has invalid owner" >&2; return 1; }
-      size=$(/usr/bin/stat -f %z "$sites")
+      size=$(/usr/bin/stat -f %z "/dev/fd/$fd")
       ((size <= 65536)) || { echo "Error: sites file exceeds 64 KiB" >&2; return 1; }
 
       while IFS= read -r domain || [ -n "$domain" ]; do
@@ -57,7 +60,8 @@ let
         count=$((count + 1))
         ((count <= 200)) || { echo "Error: sites file exceeds 200 domains" >&2; return 1; }
         domains+=("$domain")
-      done < "$sites"
+      done <&"$fd"
+      exec {fd}<&-
       ((count > 0)) || { echo "Error: sites file is empty" >&2; return 1; }
 
       local tmp

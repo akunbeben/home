@@ -79,6 +79,19 @@ pkgs.writeShellScriptBin "boc" ''
     esac
   }
 
+  _shell_quote() {
+    local shell="$1"
+    local value="$2"
+
+    if [ "$shell" = fish ]; then
+      fish -c 'string escape -- "$argv[1]"' -- "$value"
+      return
+    fi
+
+    value=''${value//\'/\'\\\'\'}
+    printf "'%s'" "$value"
+  }
+
   _sync_bottom_pane_cwd() {
     local target="$1"
     local target_dir="$2"
@@ -95,7 +108,9 @@ pkgs.writeShellScriptBin "boc" ''
     _is_shell "$cmd" || return
     [ "$path" = "$target_dir" ] && return
 
-    tmux send-keys -t "$pane" C-c "cd -- \"$target_dir\"" Enter
+    local quoted_dir
+    quoted_dir=$(_shell_quote "$cmd" "$target_dir")
+    tmux send-keys -t "$pane" C-c "cd -- $quoted_dir" Enter
   }
 
   _ensure_window_layout() {

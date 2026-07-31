@@ -125,7 +125,10 @@
       set fish_greeting
       set -gx EDITOR nvim
 
-      test -f "$HOME/.env"; and envsource "$HOME/.env"
+      if test -f "$HOME/.env"
+        chmod 600 "$HOME/.env"
+        envsource "$HOME/.env"
+      end
 
       fnm env --use-on-cd --shell fish | source
 
@@ -212,21 +215,35 @@
       };
       envsource = {
         body = ''
-          set -f envfile "$argv"
+          if test (count $argv) -ne 1
+              echo "Usage: envsource <file>" >&2
+              return 1
+          end
+
+          set -f envfile "$argv[1]"
           if not test -f "$envfile"
               echo "Unable to load $envfile"
               return 1
           end
-          while read line
-              if not string match -qr '^#|^$' "$line"
-                  if string match -qr '=' "$line"
-                      set item (string split -m 1 '=' $line)
-                      set item[2] (eval echo $item[2])
-                      set -gx $item[1] $item[2]
-                  else
-                      eval $line
-                  end
+
+          while read -l line
+              if string match -qr '^\s*(#|$)' -- "$line"
+                  continue
               end
+
+              set -l item (string split -m 1 '=' -- "$line")
+              if test (count $item) -ne 2
+                  echo "Invalid dotenv line in $envfile" >&2
+                  return 1
+              end
+
+              set -l name "$item[1]"
+              if not string match -qr '^[A-Za-z_][A-Za-z0-9_]*$' -- "$name"
+                  echo "Invalid environment variable name in $envfile" >&2
+                  return 1
+              end
+
+              set -gx "$name" "$item[2]"
           end <"$envfile"
         '';
       };
