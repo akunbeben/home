@@ -4,8 +4,8 @@ let
   tmuxBin = "${pkgs.tmux}/bin/tmux";
   privacyMirror = pkgs.callPackage ../pkgs/privacy-mirror.nix {};
   privacyMirrorSigningIdentity = "Privacy Mirror Local Code Signing";
-  syncScript = ''
-    MODE=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
+  terminalThemeApply = pkgs.writeShellScriptBin "terminal-theme-apply" ''
+    MODE=$(defaults read -g AppleInterfaceStyle 2>/dev/null || true)
     if [ "$MODE" = "Dark" ]; then
       THEME="$HOME/.config/kitty/themes/opencode-dark.conf"
       BG="#0a0a0a"
@@ -14,7 +14,7 @@ let
       GREEN="#7fd88f"
       BLUE="#fab283"
       CYAN="#56b6c2"
-      MAGENTA="#9d7cd8"
+      MAGENTA="#5c9cf5"
       YELLOW="#f5a742"
     else
       THEME="$HOME/.config/kitty/themes/opencode-light.conf"
@@ -36,18 +36,15 @@ let
     done
 
     if ${tmuxBin} info >/dev/null 2>&1; then
-      ${tmuxBin} set -g status-style "fg=$FG,bg=$BG"
-      ${tmuxBin} set -g status-left "#[fg=$BG,bg=$MAGENTA,bold]    #S #[fg=$MAGENTA,bg=$BG,nobold] "
-      ${tmuxBin} set -g status-right "#[fg=$CYAN,bg=$BG]  #[fg=$FG]#(tmux-system-status cpu)  #[fg=$GREEN]  #[fg=$FG]#(tmux-system-status memory) #[fg=$YELLOW,bold]#(focus status --tmux)"
-      ${tmuxBin} set -g window-status-current-format "#[fg=$BLUE,bg=$BG]#[fg=$BG,bg=$BLUE,bold] #I #W #[fg=$BLUE,bg=$BG,nobold] "
-      ${tmuxBin} set -g window-status-format "#[fg=$MUTED,bg=$BG] #I #[fg=$FG]#W "
-      ${tmuxBin} set -g message-style "fg=$BG,bg=$CYAN,bold"
-      ${tmuxBin} set -g mode-style "fg=$BG,bg=$YELLOW"
+      ${tmuxBin} set -g @theme_bg "$BG"
+      ${tmuxBin} set -g @theme_fg "$FG"
+      ${tmuxBin} set -g @theme_muted "$MUTED"
+      ${tmuxBin} set -g @theme_green "$GREEN"
+      ${tmuxBin} set -g @theme_blue "$BLUE"
+      ${tmuxBin} set -g @theme_cyan "$CYAN"
+      ${tmuxBin} set -g @theme_magenta "$MAGENTA"
+      ${tmuxBin} set -g @theme_yellow "$YELLOW"
       ${tmuxBin} set -g clock-mode-colour "$BLUE"
-      ${tmuxBin} set -g pane-border-style "fg=$MUTED"
-      ${tmuxBin} set -g pane-active-border-style "fg=$BLUE"
-      ${tmuxBin} set -g popup-border-style "fg=$BLUE"
-      ${tmuxBin} set -g popup-style "fg=$FG,bg=$BG"
     fi
   '';
   workHoursDisplayAwakeScript = ''
@@ -86,7 +83,7 @@ in {
     enable = true;
     config = {
       Label = "com.benny.kitty-theme-sync";
-      ProgramArguments = [ "/bin/sh" "-c" syncScript ];
+      ProgramArguments = [ "${terminalThemeApply}/bin/terminal-theme-apply" ];
       WatchPaths = [ "${config.home.homeDirectory}/Library/Preferences/.GlobalPreferences.plist" ];
       RunAtLoad = true;
     };
@@ -141,6 +138,7 @@ in {
   '';
 
   home.file = {
+    ".local/bin/terminal-theme-apply".source = "${terminalThemeApply}/bin/terminal-theme-apply";
     ".pi/agent/keybindings.json".text = builtins.toJSON {
       "tui.input.newLine" = "shift+enter";
     };

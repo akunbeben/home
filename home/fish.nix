@@ -164,14 +164,9 @@
         body = ''
           set -l mode (defaults read -g AppleInterfaceStyle 2>/dev/null)
           if test "$mode" = Dark
-              set theme ~/.config/kitty/themes/opencode-dark.conf
-              set bg '#0a0a0a'
               set fg '#eeeeee'
               set muted '#808080'
               set green '#7fd88f'
-              set blue '#fab283'
-              set cyan '#56b6c2'
-              set magenta '#9d7cd8'
               set yellow '#f5a742'
               set command '#fab283'
               set keyword '#9d7cd8'
@@ -179,14 +174,9 @@
               set error '#e06c75'
               set selection '#1d1d25'
           else
-              set theme ~/.config/kitty/themes/opencode-light.conf
-              set bg '#ffffff'
               set fg '#1a1a1a'
               set muted '#8a8a8a'
               set green '#3d9a57'
-              set blue '#3b7dd8'
-              set cyan '#318795'
-              set magenta '#d68c27'
               set yellow '#b0851f'
               set command '#3b7dd8'
               set keyword '#d68c27'
@@ -195,12 +185,7 @@
               set selection '#dfeaf7'
           end
 
-          cp $theme ~/.config/kitty/current-theme.conf
-
-          for sock in /tmp/kitty-*
-              test -S $sock; and /Applications/kitty.app/Contents/MacOS/kitty @ --to unix:$sock \
-                  set-colors --all $theme 2>/dev/null
-          end
+          $HOME/.local/bin/terminal-theme-apply
 
           set -g fish_color_normal $fg
           set -g fish_color_command $command
@@ -223,20 +208,6 @@
           set -g fish_pager_color_description $muted
           set -g fish_pager_color_progress $muted
 
-          if set -q TMUX
-               tmux set -g status-style "fg=$fg,bg=$bg"
-               tmux set -g status-left "#[fg=$bg,bg=$magenta,bold]    #S #[fg=$magenta,bg=$bg,nobold] "
-               tmux set -g status-right "#[fg=$cyan,bg=$bg]  #[fg=$fg]#(tmux-system-status cpu)  #[fg=$green]  #[fg=$fg]#(tmux-system-status memory) #[fg=$yellow,bold]#(focus status --tmux)"
-               tmux set -g window-status-current-format "#[fg=$blue,bg=$bg]#[fg=$bg,bg=$blue,bold] #I #W #[fg=$blue,bg=$bg,nobold] "
-               tmux set -g window-status-format "#[fg=$muted,bg=$bg] #I #[fg=$fg]#W "
-               tmux set -g message-style "fg=$bg,bg=$cyan,bold"
-               tmux set -g mode-style "fg=$bg,bg=$yellow"
-               tmux set -g clock-mode-colour "$blue"
-               tmux set -g pane-border-style "fg=$muted"
-               tmux set -g pane-active-border-style "fg=$blue"
-               tmux set -g popup-border-style "fg=$blue"
-               tmux set -g popup-style "fg=$fg,bg=$bg"
-          end
         '';
       };
       envsource = {
