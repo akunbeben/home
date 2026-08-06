@@ -115,8 +115,11 @@ pkgs.writeShellScriptBin "boc" ''
 
   _ensure_window_layout() {
     local target="$1"
-    local active_pane target_dir
+    local active_pane target_dir window_name
     local -a panes
+
+    window_name=$(tmux display-message -p -t "$target" '#{window_name}' 2>/dev/null)
+    [ "$window_name" = "workspace" ] && return
 
     mapfile -t panes < <(tmux list-panes -t "$target" -F '#{pane_id}' 2>/dev/null)
     [ "''${#panes[@]}" -eq 0 ] && return
