@@ -6,6 +6,7 @@ local M = {
 }
 
 local namespace = vim.api.nvim_create_namespace("go_debug_visual")
+local connector_namespace = vim.api.nvim_create_namespace("go_debug_visual_connector")
 
 local function valid_buffer(buffer)
     return buffer and vim.api.nvim_buf_is_valid(buffer)
@@ -16,10 +17,25 @@ local function valid_window(window)
 end
 
 local function close_window()
+    if valid_buffer(M.connector_source) then
+        vim.api.nvim_buf_clear_namespace(M.connector_source, connector_namespace, 0, -1)
+    end
     if valid_window(M.window) then
         vim.api.nvim_win_close(M.window, true)
     end
+    if valid_window(M.arrow_window) then
+        vim.api.nvim_win_close(M.arrow_window, true)
+    end
+    if valid_window(M.vertical_window) then
+        vim.api.nvim_win_close(M.vertical_window, true)
+    end
     M.window = nil
+    M.arrow_window = nil
+    M.vertical_window = nil
+    M.arrow_buffer = nil
+    M.vertical_buffer = nil
+    M.connector_source = nil
+    M.current_frame = nil
 end
 
 local function clip(text, width)
@@ -73,6 +89,42 @@ local function source_window(buffer)
     end
 end
 
+local function hide_neo_tree()
+    if M.neo_tree_state then
+        return
+    end
+
+    for _, window in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+        local buffer = vim.api.nvim_win_get_buf(window)
+        if vim.bo[buffer].filetype == "neo-tree" then
+            M.neo_tree_state = {
+                source = vim.b[buffer].neo_tree_source or "filesystem",
+                position = vim.b[buffer].neo_tree_position,
+            }
+            require("neo-tree.command").execute({ action = "close" })
+            return
+        end
+    end
+end
+
+local function restore_neo_tree()
+    local state = M.neo_tree_state
+    M.neo_tree_state = nil
+    if not state then
+        return
+    end
+
+    vim.schedule(function()
+        if vim.fn.exists(":Neotree") == 2 then
+            require("neo-tree.command").execute({
+                action = "show",
+                source = state.source,
+                position = state.position,
+            })
+        end
+    end)
+end
+
 local function current_source_line(frame, buffer)
     if not buffer or not frame.line or frame.line < 1 then
         return ""
@@ -89,6 +141,134 @@ local function define_highlights()
     vim.api.nvim_set_hl(0, "GoDebugVisualChanged", { default = true, link = "DiagnosticOk" })
     vim.api.nvim_set_hl(0, "GoDebugVisualValue", { default = true, link = "Special" })
     vim.api.nvim_set_hl(0, "GoDebugVisualMuted", { default = true, link = "Comment" })
+    vim.api.nvim_set_hl(0, "GoDebugVisualArrow", { default = true, link = "Normal" })
+    vim.api.nvim_set_hl(0, "GoDebugVisualConnector", { default = true, link = "Normal" })
+end
+
+local function set_scratch_lines(buffer, lines)
+    vim.api.nvim_set_option_value("modifiable", true, { buf = buffer })
+    vim.api.nvim_buf_set_lines(buffer, 0, -1, false, lines)
+    vim.api.nvim_set_option_value("modifiable", false, { buf = buffer })
+end
+
+local function close_connector_windows()
+    if valid_window(M.arrow_window) then
+        vim.api.nvim_win_close(M.arrow_window, true)
+    end
+    if valid_window(M.vertical_window) then
+        vim.api.nvim_win_close(M.vertical_window, true)
+    end
+    M.arrow_window = nil
+    M.vertical_window = nil
+    M.arrow_buffer = nil
+    M.vertical_buffer = nil
+end
+
+local function render_connector(frame, target, window_width, window_height, popup_width, popup_height)
+    local line = tonumber(frame.line)
+    if not line then
+        return
+    end
+
+    local first_line = vim.api.nvim_win_call(target, function()
+        return vim.fn.line("w0")
+    end)
+    local row = line - first_line
+    local popup_left = math.max(0, window_width - popup_width - 1)
+    local col = math.min(window_width - 1, popup_left + math.floor(popup_width * 0.28))
+    local source_buffer = vim.api.nvim_win_get_buf(target)
+
+    if valid_buffer(M.connector_source) then
+        vim.api.nvim_buf_clear_namespace(M.connector_source, connector_namespace, 0, -1)
+    end
+    M.connector_source = source_buffer
+    close_connector_windows()
+
+    if row < 0 or row >= window_height then
+        return
+    end
+
+    local source_line = vim.api.nvim_buf_get_lines(source_buffer, line - 1, line, false)[1] or ""
+    local target_position = vim.api.nvim_win_get_position(target)
+    local eol_position = vim.fn.screenpos(target, line, #source_line + 1)
+    local eol_col = eol_position.col - target_position[2] - 1
+    local horizontal_width = col - eol_col
+    if horizontal_width > 0 then
+        local horizontal = string.rep("━", math.max(horizontal_width - 1, 0)) .. "┘"
+        vim.api.nvim_buf_set_extmark(source_buffer, connector_namespace, line - 1, 0, {
+            virt_text = { { horizontal, "GoDebugVisualConnector" } },
+            virt_text_pos = "eol",
+            hl_mode = "combine",
+        })
+    end
+
+    local panel_top = 1
+    local panel_bottom = panel_top + popup_height + 1
+    local head_row
+    local vertical_start
+    local vertical_height
+    local arrow
+
+    if row > panel_bottom then
+        head_row = panel_bottom
+        vertical_start = head_row + 1
+        vertical_height = row - vertical_start
+        arrow = "↑"
+    elseif row < panel_top then
+        head_row = panel_top
+        vertical_start = row + 1
+        vertical_height = head_row - vertical_start
+        arrow = "↓"
+    end
+
+    if not arrow or vertical_height < 1 then
+        return
+    end
+
+    if not valid_buffer(M.arrow_buffer) then
+        M.arrow_buffer = vim.api.nvim_create_buf(false, true)
+        vim.api.nvim_set_option_value("bufhidden", "wipe", { buf = M.arrow_buffer })
+    end
+    set_scratch_lines(M.arrow_buffer, { arrow })
+
+    local arrow_config = {
+        relative = "win",
+        win = target,
+        row = head_row,
+        col = col,
+        width = 1,
+        height = 1,
+        style = "minimal",
+        focusable = false,
+        zindex = 71,
+    }
+
+    M.arrow_window = vim.api.nvim_open_win(M.arrow_buffer, false, arrow_config)
+    vim.api.nvim_set_option_value("winhighlight", "Normal:GoDebugVisualArrow", { win = M.arrow_window })
+
+    if not valid_buffer(M.vertical_buffer) then
+        M.vertical_buffer = vim.api.nvim_create_buf(false, true)
+        vim.api.nvim_set_option_value("bufhidden", "wipe", { buf = M.vertical_buffer })
+    end
+    local vertical_lines = {}
+    for index = 1, vertical_height do
+        vertical_lines[index] = "│"
+    end
+    set_scratch_lines(M.vertical_buffer, vertical_lines)
+
+    local vertical_config = {
+        relative = "win",
+        win = target,
+        row = vertical_start,
+        col = col,
+        width = 1,
+        height = vertical_height,
+        style = "minimal",
+        focusable = false,
+        zindex = 71,
+    }
+    M.vertical_window = vim.api.nvim_open_win(M.vertical_buffer, false, vertical_config)
+    vim.api.nvim_set_option_value("winhighlight", "Normal:GoDebugVisualArrow", { win = M.vertical_window })
 end
 
 local function render(frame, records)
@@ -101,6 +281,7 @@ local function render(frame, records)
     if not target then
         return
     end
+    M.current_frame = frame
 
     local window_width = vim.api.nvim_win_get_width(target)
     local window_height = vim.api.nvim_win_get_height(target)
@@ -217,6 +398,35 @@ local function render(frame, records)
             { win = M.window }
         )
     end
+
+    render_connector(frame, target, window_width, window_height, width, height)
+end
+
+function M.update_connector()
+    if M.updating_connector or not M.enabled or not M.current_frame or not valid_window(M.window) then
+        return
+    end
+
+    M.updating_connector = true
+    pcall(function()
+        local buffer = source_buffer(M.current_frame)
+        local target = source_window(buffer)
+        if not target then
+            close_connector_windows()
+            return
+        end
+
+        local popup = vim.api.nvim_win_get_config(M.window)
+        render_connector(
+            M.current_frame,
+            target,
+            vim.api.nvim_win_get_width(target),
+            vim.api.nvim_win_get_height(target),
+            popup.width,
+            popup.height
+        )
+    end)
+    M.updating_connector = false
 end
 
 local function preferred_scopes(frame)
@@ -372,6 +582,7 @@ function M.reset()
     M.history = {}
     M.previous = {}
     close_window()
+    restore_neo_tree()
 end
 
 function M.setup()
@@ -385,6 +596,7 @@ function M.setup()
 
     dap.listeners.after.event_initialized["go_debug_visual"] = function()
         M.reset()
+        hide_neo_tree()
     end
     dap.listeners.after.event_stopped["go_debug_visual"] = function()
         if M.enabled then
@@ -395,6 +607,16 @@ function M.setup()
     dap.listeners.before.event_terminated["go_debug_visual"] = M.reset
     dap.listeners.before.event_exited["go_debug_visual"] = M.reset
     dap.listeners.before.disconnect["go_debug_visual"] = M.reset
+
+    local connector_group = vim.api.nvim_create_augroup("GoDebugVisualConnector", { clear = true })
+    vim.api.nvim_create_autocmd({ "WinScrolled", "VimResized" }, {
+        group = connector_group,
+        callback = function()
+            if M.current_frame then
+                vim.schedule(M.update_connector)
+            end
+        end,
+    })
 
     vim.api.nvim_create_user_command("GoDebugVisualToggle", M.toggle, {})
 end
